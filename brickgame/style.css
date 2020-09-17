@@ -4,10 +4,9 @@
   padding: auto;
   margin: 0;
 }
-canvas {
+
+#canvas {
   background: #eee;
   display: block;
-  margin: 100px auto;
-  width: 700px;
-  height: 500px;
+  margin: 40px auto;
 }
