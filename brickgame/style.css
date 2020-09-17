@@ -1,0 +1,13 @@
+/** @format */
+
+* {
+  padding: auto;
+  margin: 0;
+}
+canvas {
+  background: #eee;
+  display: block;
+  margin: 100px auto;
+  width: 700px;
+  height: 500px;
+}
