@@ -11,6 +11,30 @@ const canvasLT = 0;
 
 // ============================================================================================================
 // ============================================================================================================
+// 점수 기록 변수
+let score = 0;
+
+// 점수 기록 판 그리기
+function drawScore() {
+  ctx.font = '16px Arial';
+  ctx.fillStyle = '#0095DD';
+  ctx.fillText('Score: ' + score, 8, 20);
+}
+
+// ============================================================================================================
+// ============================================================================================================
+// 남은 생명 수 설정 변수
+let lives = 3;
+
+// 남은 생명 수 그리기
+function drawLives() {
+  ctx.font = '16px Arial';
+  ctx.fillStyle = '#0095DD';
+  ctx.fillText('Lives: ' + lives, canvas.width - 65, 20);
+}
+
+// ============================================================================================================
+// ============================================================================================================
 // 공의 반지름
 const radius = 10;
 
@@ -47,7 +71,7 @@ let blockHeight = 20;
 let blockPadding = 12;
 
 // 블럭 오브젝트의 top, left
-let blockOffsetTop = 10;
+let blockOffsetTop = 30;
 let blockOffsetLeft = 14;
 
 // 블럭 배열 변수 초기화
@@ -94,6 +118,11 @@ function collisionDetect() {
         ) {
           dy = dy * -1;
           b.status = 0;
+          score += 10;
+          if (score === blockRow * blockCol * 10) {
+            alert('OK');
+            document.location.reload();
+          }
         }
       }
     }
@@ -127,6 +156,7 @@ let leftPressed = false;
 let rightPressed = false;
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
+document.addEventListener('mousemove', mouseMoveHandler, false);
 
 function keyDownHandler(event) {
   if (event.keyCode === 37) {
@@ -144,6 +174,13 @@ function keyUpHandler(event) {
     rightPressed = false;
   } else {
     // do nothing
+  }
+}
+
+function mouseMoveHandler(event) {
+  let relativeX = event.clientX - canvas.offsetLeft;
+  if (relativeX > 0 && relativeX < canvas.width) {
+    barX = relativeX - barWidth / 2;
   }
 }
 
@@ -180,13 +217,25 @@ function detectWall(x, y) {
   if (y <= wallTop) {
     dy = dy * -1;
   } else {
+    // 공이 하단 블럭에 충돌했을 때
     if (y >= barY) {
       if (x >= barX && x <= barX + barWidth) {
         dy = dy * -1;
       }
+      // 공이 캔버스 하단에 충돌했을 때
       if (y >= wallBottom) {
-        // alert('asdf');
-        dy = dy * -1;
+        lives--;
+        if (!lives) {
+          alert('GAME OVER');
+          document.location.reload();
+        } else {
+          x = canvas.clientWidth / 2;
+          y = canvas.clientHeight - 30;
+          barX = canvas.clientWidth / 2 - barWidth / 2;
+          barY = canvas.clientHeight - barHeight * 2;
+          dx = 4;
+          dy = -4;
+        }
       }
     }
   }
@@ -203,15 +252,15 @@ function draw() {
   drawBall();
   drawBar();
   drawBlock();
+  drawScore();
+  drawLives();
   detectWall(x, y);
   collisionDetect();
   moveBar();
 
   x += dx;
   y += dy;
+  requestAnimationFrame(draw);
 }
 
-// JavaScript 타이밍 함수인
-// setInterval()나 requestAnimationFrame()를 이용하면
-// 함수를 몇번이고 계속 반복해서 실행할 수 있습니다..
-setInterval(draw, 10);
+draw();
