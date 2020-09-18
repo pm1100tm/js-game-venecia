@@ -84,13 +84,13 @@ let barY = canvas.clientHeight - barHeight * 2;
 let dBarX = 2;
 
 // 하단 블럭 그리기 메서드
-const barObj = function drawBar() {
+function drawBar() {
   ctx.beginPath();
   ctx.rect(barX, barY, barWidth, barHeight);
   ctx.fillStyle = '#0095DD';
   ctx.fill();
   ctx.closePath();
-};
+}
 
 // 하단 블럭 이동하기 위한 리스터 이벤트, 변수
 let leftPressed = false;
@@ -135,26 +135,28 @@ function moveBar() {
 
 // ============================================================================================================
 // ============================================================================================================
+// 충돌 기준 값
+let wallLeft = 0 + radius;
+let wallRight = canvas.clientWidth - radius;
+let wallTop = 0 + radius;
+let wallBottom = canvas.clientHeight - radius;
+
 function detectWall(x, y) {
-  // 공이 캔버스 벽에 충돌되었을 때 공의 이동 위치 값 * -1 (y 값)
-  // 공이 하단 블럭에 충될되었을 때 공의 이동 위치 값 * -1 (y 값)
-  if (x >= canvas.clientWidth - radius || x <= radius) {
+  // 공이 캔버스 양옆에 에 충돌되었을 때
+  if (x <= wallLeft || x >= wallRight) {
     dx = dx * -1;
   }
-  if (y <= radius) {
+  // 공이 캔버스 위에 충돌했을 때
+  if (y <= wallTop) {
     dy = dy * -1;
   } else {
-    if (y === barY) {
-      if (x > barX && x < barX + barWidth) {
-        dy = -dy;
-      } else {
-        // do nothing
+    if (y >= barY) {
+      if (x >= barX && x <= barX + barWidth) {
+        dy = dy * -1;
       }
-    } else if (y >= canvas.clientHeight - radius) {
-      alert('Game Over');
-      return false;
-    } else {
-      // do nothing
+      if (y >= wallBottom) {
+        alert('asdf');
+      }
     }
   }
 }
@@ -167,23 +169,14 @@ function draw() {
   // 직사각형 캔버스의 좌상단 모서리 (x, y), 우하단 모서리 (canvas width, height)
   // 지정한 영역 안에 있는 것들은 전부 지워지게 됨.
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-
-  // 공 그리기 메서드 호출
   drawBall();
-
-  // 하단 바 그리기 메서드 호출
-  barObj();
-
+  drawBar();
   drawBlock();
 
-  // 공 위치 값 가변 변수 대입 (이동)
   x += dx;
   y += dy;
 
-  // 하단 블럭 이동 메서드 호출
   moveBar();
-
-  // 공 충돌 감지 메서드 호출
   detectWall(x, y);
 }
 
