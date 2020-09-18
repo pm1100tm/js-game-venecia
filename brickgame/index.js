@@ -19,8 +19,8 @@ let x = canvas.clientWidth / 2;
 let y = canvas.clientHeight - 30;
 
 // 공 이동할 값 dx, dy
-let dx = 3;
-let dy = -3;
+let dx = 4;
+let dy = -4;
 
 // 공 그리기 메서드
 function drawBall() {
@@ -36,26 +36,25 @@ function drawBall() {
 // ============================================================================================================
 // 상단 블럭 변수 설정
 // 줄 3, 칸 5
-let blockRow = 4;
+let blockRow = 5;
 let blockCol = 7;
 
 // 각 블럭의 width, height
-let blockWidth = 80;
+let blockWidth = 86;
 let blockHeight = 20;
 
 // 블럭 배치 간격
-let blockPadding = 10;
+let blockPadding = 12;
 
 // 블럭 오브젝트의 top, left
-let blockOffsetTop = 30;
-let blockOffsetLeft = 30;
+let blockOffsetTop = 10;
+let blockOffsetLeft = 14;
 
 // 블럭 배열 변수 초기화
-let block = Array.from(Array(blockRow), () => new Array(blockCol));
-// let block = [];
+let block = [];
 for (let i = 0; i < blockRow; i++) {
   // let block = []; 이렇게 초기화를 시켜주면, 아래 코드는 반드시 써야 됨.
-  // block[i] = [];
+  block[i] = [];
   for (let j = 0; j < blockCol; j++) {
     block[i][j] = { x: 0, y: 0, status: 1 };
   }
@@ -80,18 +79,22 @@ function drawBlock() {
   }
 }
 
-function collisionDetection() {
+// 블럭 부수기
+function collisionDetect() {
   for (let i = 0; i < blockRow; i++) {
     for (let j = 0; j < blockCol; j++) {
       let b = block[i][j];
-      if (
-        x > b.x + radius &&
-        x < b.x + blockWidth &&
-        y > b.y &&
-        y < b.y + blockHeight
-      ) {
-        dy = dy * -1;
-        b.status = 0;
+      // ##중요 코드##
+      if (b.status === 1) {
+        if (
+          x > b.x + radius &&
+          x < b.x + blockWidth &&
+          y > b.y &&
+          y < b.y + blockHeight
+        ) {
+          dy = dy * -1;
+          b.status = 0;
+        }
       }
     }
   }
@@ -108,7 +111,7 @@ let barX = canvas.clientWidth / 2 - barWidth / 2;
 let barY = canvas.clientHeight - barHeight * 2;
 
 // 하단 블럭 이동 속도
-let dBarX = 2;
+let dBarX = 3;
 
 // 하단 블럭 그리기 메서드
 function drawBar() {
@@ -201,7 +204,7 @@ function draw() {
   drawBar();
   drawBlock();
   detectWall(x, y);
-  collisionDetection();
+  collisionDetect();
   moveBar();
 
   x += dx;
