@@ -46,13 +46,13 @@ let barY = canvas.clientHeight - barHeight * 2;
 let dBarX = 2;
 
 // 하단 블럭 그리기 메서드
-function drawBar() {
+const barObj = function drawBar() {
   ctx.beginPath();
   ctx.rect(barX, barY, barWidth, barHeight);
   ctx.fillStyle = '#0095DD';
   ctx.fill();
   ctx.closePath();
-}
+};
 
 // 하단 블럭 이동하기 위한 리스터 이벤트, 변수
 let leftPressed = false;
@@ -67,7 +67,6 @@ function keyDownHandler(event) {
     rightPressed = true;
   } else {
   }
-  // console.log(leftPressed + ' ' + rightPressed);
 }
 
 function keyUpHandler(event) {
@@ -75,8 +74,9 @@ function keyUpHandler(event) {
     leftPressed = false;
   } else if (event.keyCode === 39) {
     rightPressed = false;
+  } else {
+    // do nothing
   }
-  // console.log(leftPressed + ' ' + rightPressed);
 }
 
 // 하단 블럭 이동 메서드
@@ -98,12 +98,24 @@ function moveBar() {
 // ============================================================================================================
 // ============================================================================================================
 function detectWall(x, y) {
-  // 충돌되는 공의 위치 값
+  // 캔버스 벽에 충돌되는 공의 위치 값, 충될 되었을 때 방향 바꾸기
   if (x >= canvas.clientWidth - radius || x <= radius) {
     dx = dx * -1;
   }
-  if (y <= radius || y >= canvas.clientHeight - radius) {
+  if (y <= radius) {
     dy = dy * -1;
+  } else {
+    if (y === barY) {
+      if (x > barX && x < barX + barWidth) {
+        dy = -dy;
+      } else {
+        // do nothing
+      }
+    } else if (y >= canvas.clientHeight - radius) {
+      document.location.reload();
+    } else {
+      // do nothing
+    }
   }
 }
 
@@ -113,12 +125,17 @@ function draw() {
   // 직사각형 캔버스의 좌상단 모서리 (x, y), 우하단 모서리 (canvas width, height)
   // 지정한 영역 안에 있는 것들은 전부 지워지게 됨.
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+  // 공 그리기 메서드 호출
   drawBall();
-  drawBar();
+  // 하단 바 그리기 메서드 호출
+  barObj();
+  // 공 위치 값 가변 변수 대입 (이동)
   x += dx;
   y += dy;
-  detectWall(x, y);
+  // 하단 블럭 이동 메서드 호출
   moveBar();
+  // 공 충돌 감지 메서드 호출
+  detectWall(x, y);
 }
 
 // JavaScript 타이밍 함수인

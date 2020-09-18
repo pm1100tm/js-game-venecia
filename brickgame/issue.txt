@@ -7,3 +7,5 @@
 https://gomakethings.com/listening-to-multiple-events-in-vanilla-js/
 Each event needs its own listener
 
+#하단 블럭 충돌 감지 로직
+어려움
