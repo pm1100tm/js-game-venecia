@@ -1,0 +1,29 @@
+#제목 : 급식체 부수기
+
+JavaScript Map 객체를 활용.
+
+—화면 쪽
+div 를 랜덤하게 만든다.
+모든 div 의 공통 속성은
+position : absolute
+top : random
+left : random
+
+—로직
+class 하나 만들자.
+key
+mean
+score
+top
+left
+font-family
+font-size
+font-weight
+
+Map 에 key value 를 활용하여 단어와 뜻을 저장한다.
+//파일을 읽어와서 저장한다.
+
+key 를 넣고 div의 innerHTML 에 넣고 화면에 표시한다.
+
+
+
