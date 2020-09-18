@@ -50,22 +50,49 @@ let blockPadding = 10;
 let blockOffsetTop = 30;
 let blockOffsetLeft = 30;
 
-// 블럭 배열 변수
-let block = null;
+// 블럭 배열 변수 초기화
+let block = Array.from(Array(blockRow), () => new Array(blockCol));
+// let block = [];
+for (let i = 0; i < blockRow; i++) {
+  // let block = []; 이렇게 초기화를 시켜주면, 아래 코드는 반드시 써야 됨.
+  // block[i] = [];
+  for (let j = 0; j < blockCol; j++) {
+    block[i][j] = { x: 0, y: 0, status: 1 };
+  }
+}
 
 // 블럭 그리기
 function drawBlock() {
-  block = Array.from(Array(blockRow), () => new Array(blockCol));
   for (let i = 0; i < blockRow; i++) {
     for (let j = 0; j < blockCol; j++) {
-      let blockX = j * (blockWidth + blockPadding) + blockOffsetLeft;
-      let blockY = i * (blockHeight + blockPadding) + blockOffsetTop;
-      block[i][j] = { x: blockX, y: blockY };
-      ctx.beginPath();
-      ctx.rect(blockX, blockY, blockWidth, blockHeight);
-      ctx.fillStyle = '#0095DD';
-      ctx.fill();
-      ctx.closePath();
+      if (block[i][j].status === 1) {
+        let blockX = j * (blockWidth + blockPadding) + blockOffsetLeft;
+        let blockY = i * (blockHeight + blockPadding) + blockOffsetTop;
+        block[i][j].x = blockX;
+        block[i][j].y = blockY;
+        ctx.beginPath();
+        ctx.rect(blockX, blockY, blockWidth, blockHeight);
+        ctx.fillStyle = '#0095DD';
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+}
+
+function collisionDetection() {
+  for (let i = 0; i < blockRow; i++) {
+    for (let j = 0; j < blockCol; j++) {
+      let b = block[i][j];
+      if (
+        x > b.x + radius &&
+        x < b.x + blockWidth &&
+        y > b.y &&
+        y < b.y + blockHeight
+      ) {
+        dy = dy * -1;
+        b.status = 0;
+      }
     }
   }
 }
@@ -155,7 +182,8 @@ function detectWall(x, y) {
         dy = dy * -1;
       }
       if (y >= wallBottom) {
-        alert('asdf');
+        // alert('asdf');
+        dy = dy * -1;
       }
     }
   }
@@ -172,12 +200,12 @@ function draw() {
   drawBall();
   drawBar();
   drawBlock();
+  detectWall(x, y);
+  collisionDetection();
+  moveBar();
 
   x += dx;
   y += dy;
-
-  moveBar();
-  detectWall(x, y);
 }
 
 // JavaScript 타이밍 함수인

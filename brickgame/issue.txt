@@ -7,5 +7,20 @@
 https://gomakethings.com/listening-to-multiple-events-in-vanilla-js/
 Each event needs its own listener
 
-#하단 블럭 충돌 감지 로직
-어려움
+#아래 코드에서 status 가 계속 없어짐. 대입 됨. 요소 하나 씩 뽑아서 할당해줘야 함.
+function drawBlock() {
+  for (let i = 0; i < blockRow; i++) {
+    for (let j = 0; j < blockCol; j++) {
+      if (block[i][j].status === 1) {
+        let blockX = j * (blockWidth + blockPadding) + blockOffsetLeft;
+        let blockY = i * (blockHeight + blockPadding) + blockOffsetTop;
+        block[i][j] = { x: blockX, y: blockY };
+        ctx.beginPath();
+        ctx.rect(blockX, blockY, blockWidth, blockHeight);
+        ctx.fillStyle = '#0095DD';
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+}
