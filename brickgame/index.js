@@ -19,8 +19,8 @@ let x = canvas.clientWidth / 2;
 let y = canvas.clientHeight - 30;
 
 // 공 이동할 값 dx, dy
-let dx = 2;
-let dy = -2;
+let dx = 3;
+let dy = -3;
 
 // 공 그리기 메서드
 function drawBall() {
@@ -30,6 +30,44 @@ function drawBall() {
   ctx.fillStyle = '#0095DD';
   ctx.fill();
   ctx.closePath();
+}
+
+// ============================================================================================================
+// ============================================================================================================
+// 상단 블럭 변수 설정
+// 줄 3, 칸 5
+let blockRow = 4;
+let blockCol = 7;
+
+// 각 블럭의 width, height
+let blockWidth = 80;
+let blockHeight = 20;
+
+// 블럭 배치 간격
+let blockPadding = 10;
+
+// 블럭 오브젝트의 top, left
+let blockOffsetTop = 30;
+let blockOffsetLeft = 30;
+
+// 블럭 배열 변수
+let block = null;
+
+// 블럭 그리기
+function drawBlock() {
+  block = Array.from(Array(blockRow), () => new Array(blockCol));
+  for (let i = 0; i < blockRow; i++) {
+    for (let j = 0; j < blockCol; j++) {
+      let blockX = j * (blockWidth + blockPadding) + blockOffsetLeft;
+      let blockY = i * (blockHeight + blockPadding) + blockOffsetTop;
+      block[i][j] = { x: blockX, y: blockY };
+      ctx.beginPath();
+      ctx.rect(blockX, blockY, blockWidth, blockHeight);
+      ctx.fillStyle = '#0095DD';
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
 }
 
 // ============================================================================================================
@@ -98,7 +136,8 @@ function moveBar() {
 // ============================================================================================================
 // ============================================================================================================
 function detectWall(x, y) {
-  // 캔버스 벽에 충돌되는 공의 위치 값, 충될 되었을 때 방향 바꾸기
+  // 공이 캔버스 벽에 충돌되었을 때 공의 이동 위치 값 * -1 (y 값)
+  // 공이 하단 블럭에 충될되었을 때 공의 이동 위치 값 * -1 (y 값)
   if (x >= canvas.clientWidth - radius || x <= radius) {
     dx = dx * -1;
   }
@@ -112,28 +151,38 @@ function detectWall(x, y) {
         // do nothing
       }
     } else if (y >= canvas.clientHeight - radius) {
-      document.location.reload();
+      alert('Game Over');
+      return false;
     } else {
       // do nothing
     }
   }
 }
 
+// ============================================================================================================
+// ============================================================================================================
 // 다음 프레임 전에 캔버스 지우기
 function draw() {
   // 캔버스의 내용을 지우는 메서드 clearPath() 4개의 파라미터.
   // 직사각형 캔버스의 좌상단 모서리 (x, y), 우하단 모서리 (canvas width, height)
   // 지정한 영역 안에 있는 것들은 전부 지워지게 됨.
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
   // 공 그리기 메서드 호출
   drawBall();
+
   // 하단 바 그리기 메서드 호출
   barObj();
+
+  drawBlock();
+
   // 공 위치 값 가변 변수 대입 (이동)
   x += dx;
   y += dy;
+
   // 하단 블럭 이동 메서드 호출
   moveBar();
+
   // 공 충돌 감지 메서드 호출
   detectWall(x, y);
 }
