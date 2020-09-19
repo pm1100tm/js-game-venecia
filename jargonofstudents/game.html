@@ -6,24 +6,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <!-- <script src="game.js" defer></script> -->
-    <script src="test.js" defer></script>
-    <title>Jargon of students</title>
+    <title>Word Typing Game</title>
   </head>
-  <body style="position: relative">
-    <header class="header"></header>
-    <main class="mainView">
-      <label for="" class="lab-time">
-        time:
-        <span id="timeout"></span>
-      </label>
-      <label for="" class="lab-score">
-        score::
-        <span></span>
-      </label>
-      <input type="text" class="input-word" placeholder="입력 구다사이" autofocus="autofocus" />
+  <body>
+    <main class="main">
+      <div>
+        <h1>추억의 베네치아 게임</h1>
+      </div>
+      <div><button class="btn-start btn-loading" onclick="init()">게임 시작</button></div>
     </main>
-    <section class="section"></section>
-    <footer class="footer"></footer>
+    <section class="game-display">
+      <div class="title">타자 게임</div>
+      <div class="info">
+        <div>맞은 갯수:</div>
+        <div>틀린 갯수:</div>
+        <div>정확도:</div>
+        <div>점수:</div>
+        <div>남은 목숨:</div>
+        <div class="trick">trick</div>
+      </div>
+      <div class="game-screen"></div>
+      <div class="bottom">
+        <div class="sub-info">만들고 있다 만들고 있다 만들고 있다 만들고 있다</div>
+        <div class="timer">00:00</div>
+      </div>
+    </section>
   </body>
 </html>
