@@ -1,0 +1,81 @@
+/** @format */
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 300;
+}
+
+body {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-title {
+  width: 100vw;
+  background-color: darkcyan;
+  color: white;
+  text-align: center;
+  font-size: 2em;
+  padding: 1.2rem;
+}
+
+.display-word {
+  padding: 1.2rem;
+  font-size: 4.8rem;
+  color: blueviolet;
+}
+
+.input-word {
+  padding: 0.5rem;
+}
+
+.input-word > input {
+  width: 240px;
+  height: 20px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 0.4rem;
+}
+
+.game-info {
+  display: flex;
+  justify-content: space-around;
+  font-size: 1.2rem;
+  color: cadetblue;
+  font-weight: bold;
+}
+
+.info {
+  padding: 1.2rem 1.2rem;
+}
+
+.timer,
+.score {
+  font-size: 2.2rem;
+  color: red;
+  font-weight: 500;
+}
+
+.btn {
+  width: 200px;
+  height: 50px;
+  margin: 20px auto;
+  background-color: cornflowerblue;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-loading {
+  background-color: dimgray;
+  color: darkgray;
+  cursor: not-allowed;
+}
