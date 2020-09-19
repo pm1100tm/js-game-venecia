@@ -6,6 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <script src="game.js" defer></script>
     <title>Word Typing Game</title>
   </head>
   <body>
@@ -16,19 +17,30 @@
       <div><button class="btn-start btn-loading" onclick="init()">게임 시작</button></div>
     </main>
     <section class="game-display">
+      <!-- 타이틀 -->
       <div class="title">타자 게임</div>
+      <!-- 게임 정보 -->
       <div class="info">
-        <div>맞은 갯수:</div>
-        <div>틀린 갯수:</div>
-        <div>정확도:</div>
-        <div>점수:</div>
-        <div>남은 목숨:</div>
+        <div class="num-correct">맞은 갯수:</div>
+        <div class="num-wrong">틀린 갯수:</div>
+        <div class="accuracy">정확도:</div>
+        <div class="score">점수:</div>
+        <div class="lives">남은 목숨:</div>
         <div class="trick">trick</div>
       </div>
+      <!-- 게임 화면 -->
       <div class="game-screen"></div>
+      <!-- 타이핑 공간 -->
+      <div class="typeing-area">
+        <input type="text" class="word" value="" />
+      </div>
+      <!-- 게임 추가 정보 -->
       <div class="bottom">
         <div class="sub-info">만들고 있다 만들고 있다 만들고 있다 만들고 있다</div>
-        <div class="timer">00:00</div>
+        <div class="timer">
+          TIME:
+          <span class="about-time">0</span>
+        </div>
       </div>
     </section>
   </body>

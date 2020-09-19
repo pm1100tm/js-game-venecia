@@ -73,6 +73,7 @@ body {
   color: white;
   align-items: center;
   min-height: 20px;
+  z-index: 2;
 }
 .info > div {
   padding-left: 10px;
@@ -83,15 +84,39 @@ body {
 }
 
 .game-screen {
-  min-height: 740px;
+  height: 700px;
   background-color: olivedrab;
+  position: relative;
+  overflow: hidden;
+}
+
+.typeing-area {
+  min-height: 40px;
+  max-height: 40px;
+  text-align: center;
+  background-color: olivedrab;
+}
+
+.word {
+  width: 200px;
+  height: 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  border-style: double;
+  line-height: 20px;
+}
+
+.dynamic-word-div {
+  position: absolute;
 }
 
 .bottom {
   min-height: 20px;
+  padding-right: 20px;
   background-color: yellowgreen;
   text-align: right;
-  padding-right: 20px;
   display: flex;
   justify-content: space-between;
+  z-index: 2;
 }
