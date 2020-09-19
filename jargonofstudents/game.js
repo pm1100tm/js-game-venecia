@@ -5,19 +5,25 @@
 // 유저 입력 객체
 const inputWord = document.querySelector('.word');
 const screen = document.querySelector('.game-screen');
-const scoreboard = document.querySelector('.score');
-const correctNum = document.querySelector('.num-correct');
-const wrongNum = document.querySelector('.num-wrong');
-const accuracy = document.querySelector('.accuracy');
+const correctBoard = document.querySelector('.correct');
+const wrongBoard = document.querySelector('.wrong');
+const accuracyBoard = document.querySelector('.acc');
+const scoreBoard = document.querySelector('.scoreboard');
 const timer = document.querySelector('.about-time');
 
 // 상수
 const TIME_COUNT_DOWN = 1000;
 const TIME_ZERO = 0;
 const LV_ONE_WORDS = 30;
+const WORD_SCORE = 10;
 
+// 변수
 let time = 3;
 let score = 0;
+let correctNum = 0;
+let wrongNum = 0;
+let accuracy = 0;
+
 let isPlaying = false;
 let timeInterval = 0;
 let moveInterval = 0;
@@ -25,23 +31,63 @@ let words = [];
 let word_div = [];
 let speed = [];
 let positionChangeValue = 2;
+let enterPressed = 0;
 
+//초기화
 init();
 
+//게임 세팅
 function init() {
   getWords();
   arrangeWords(LV_ONE_WORDS);
   run();
 }
 
+// 게임 시작
 function run() {
   isPlaying = changeStatus(isPlaying);
   inputWord.focus();
   timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
-  // moveInterval = setInterval(moveDiv, 10);
   moveDiv();
-  inputWord.addEventListener('keydown', (event) => {
-    wordCheckListner(event);
+
+  // inputWord.addEventListener('keydown', (event) => {
+  //   wordCheckListner(event);
+  // });
+
+  inputWord.addEventListener('keypress', (event) => {
+    let keyCode = event.keyCode || event.which;
+    if (keyCode === 13) {
+      if (enterPressed === 0) {
+        enterPressed++;
+        let input = inputWord.value.trim();
+        if ('' === input) {
+          console.log('no input');
+        } else {
+          inputWord.value = '';
+          for (let i = 0; i < word_div.length; i++) {
+            if (word_div[i].style.display !== 'none') {
+              if (input === word_div[i].innerText) {
+                word_div[i].style.display = 'none';
+                correctNum++;
+                correctBoard.innerHTML = correctNum;
+                score += WORD_SCORE;
+                scoreBoard.innerHTML = score;
+                break;
+              } else {
+                // wrongNum++;
+                // wrongBoard.innerHTML = wrongNum;
+                // break;
+              }
+            }
+          }
+        }
+
+        //엔터키가 두번 눌려졌을 때
+      } else if (enterPressed === 1) {
+        event.preventDefault();
+      }
+      enterPressed--;
+    }
   });
 }
 
@@ -49,41 +95,47 @@ function moveDiv() {
   let div = document.querySelectorAll('.dynamic-word-div');
   let pos = 0;
 
-  // 각 디브가 고정 스피드를 갖을 수 있도록 하기 위한 로직.
-  // 디브 배열 인덱스와 속도 배열 인덱스를 맞춰서, 속도 값을 랜덤으로 얻음.
   for (let i = 0; i < div.length; i++) {
-    speed[i] = Math.floor(Math.random() * 5) + 1;
+    speed[i] = Math.floor(Math.random() * 2) + 1;
   }
 
   let id = setInterval(frame, 100);
   function frame() {
-    if (pos == 650) {
+    if (pos == 700) {
       clearInterval(id);
     } else {
       for (let i = 0; i < div.length; i++) {
         pos = div[i].style.top;
-
-        // 포지션 위치를 가속하려 할 때, 포지션 값의 리턴값은 스트링 (px 가 딸려옴). px 를 제거해줘야 했다.
         let temp = pos.replace('px', '');
-
-        // 중요한 변수 - 일단 각 디브가 1px 씩 움직이는 상태에서 다시 움직여야 함.
-        // temp++;
-
-        // 첫번째 했던 방법.. 뭔가 이상함
-        // let test = Math.floor(Math.random() * 1) + Math.floor(Math.random() * 14);
-        // div[i].style.top = temp++ + test + 'px';
-
-        // 두번째 했던 방법(단 frame 위에 let speed 배열 변수 만들어야 함): 하나의 디브가 내려갈 때 속도가 랜덤임
-        // 각 디브가 고정 스피드를 가지되, 다른 스피드를 가지도록 하고 싶었다.
-        // speed[i] = Math.floor(Math.random() * 5) + 1;
-        // div[i].style.top = temp++ + speed[i] + 'px';
-
         div[i].style.top = temp++ + speed[i] + 'px';
       }
-      // let temp1 = div[0].style.top;
-      // temp1++;
-      // div[0].style.top = temp1 + 'px';
     }
+  }
+}
+
+function arrangeWords(LV_ONE_WORDS) {
+  for (let i = 0; i < LV_ONE_WORDS; i++) {
+    let randomIndex = Math.floor(Math.random() * words.length);
+    word_div[i] = document.createElement('div');
+    word_div[i].innerText = words[randomIndex];
+    screen.appendChild(word_div[i]);
+    word_div[i].className = 'dynamic-word-div';
+    word_div[i].style.fontSize = Math.floor(Math.random() * 20) + 12 + 'px';
+    word_div[i].style.top = Math.floor(Math.random() * screen.clientHeight) + 'px';
+    word_div[i].style.left = Math.floor(Math.random() * (screen.clientWidth - word_div[i].clientWidth)) + 'px';
+  }
+}
+
+function changeStatus() {
+  return isPlaying === true ? false : true;
+}
+
+function countDown() {
+  timer.innerHTML = time;
+  time > TIME_ZERO ? time-- : (isPlaying = false);
+  if (!isPlaying) {
+    time = TIME_ZERO;
+    clearInterval(timeInterval);
   }
 }
 
@@ -156,86 +208,3 @@ function getWords() {
     '해결사'
   ];
 }
-
-function arrangeWords(LV_ONE_WORDS) {
-  for (let i = 0; i < LV_ONE_WORDS; i++) {
-    let randomIndex = Math.floor(Math.random() * words.length);
-    word_div[i] = document.createElement('div');
-    word_div[i].innerText = words[randomIndex];
-    screen.appendChild(word_div[i]);
-    word_div[i].className = 'dynamic-word-div';
-    word_div[i].style.fontSize = Math.floor(Math.random() * 20) + 12 + 'px';
-    word_div[i].style.top = Math.floor(Math.random() * screen.clientHeight) + 'px';
-    word_div[i].style.left = Math.floor(Math.random() * (screen.clientWidth - word_div[i].clientWidth)) + 'px';
-  }
-}
-
-function changeStatus() {
-  return isPlaying === true ? false : true;
-}
-
-function wordCheckListner(event) {
-  if (event.defaultPrevented) {
-    return; // Do nothing if the event was already processed
-  }
-
-  if (event.key === 'Enter') {
-    let input = inputWord.value;
-    if ('' === inputWord.value) {
-      console.log('no input');
-    } else {
-      for (let i = 0; i < word_div.length; i++) {
-        if (input.trim() === word_div[i].innerText.trim()) {
-          if (word_div[i].style.display !== 'none') {
-            word_div[i].style.display = 'none';
-            break;
-          }
-        }
-      }
-      inputWord.value = '';
-    }
-  }
-}
-
-function checkWord(input) {}
-
-// inputWord.addEventListener('keydown', (event) => {
-//   if (event.defaultPrevented) {
-//     return; // Do nothing if the event was already processed
-//   }
-
-//   if (event.key === 'Enter') {
-//     if ('' != inputWord.value) {
-//       let word = inputWord.value;
-//     }
-//   }
-// });
-
-function countDown() {
-  timer.innerHTML = time;
-  time > TIME_ZERO ? time-- : (isPlaying = false);
-  if (!isPlaying) {
-    time = TIME_ZERO;
-    clearInterval(timeInterval);
-  }
-}
-
-// for (let i = 0; i < lv_wordNum; i++) {
-//   let div = document.createElement('div');
-//   div.style.position = 'absolute';
-//   div.style.border = 'solid 1px black';
-//   div.innerHTML = jar1.word;
-//   mainview.appendChild(div);
-// }
-
-// let allDiv = mainview.querySelectorAll('div');
-// for (let i = 0; i < allDiv.length; i++) {
-//   allDiv[i].className = 'word';
-//   allDiv[i].style.top = setRandomPos();
-//   allDiv[i].style.left = setRandomPos();
-// }
-
-// function setRandomPos() {
-//   let top = Math.floor(Math.random(100) * 700);
-//   return top + 'px';
-// }
