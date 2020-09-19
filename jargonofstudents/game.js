@@ -64,14 +64,15 @@ function run() {
           console.log('no input');
         } else {
           inputWord.value = '';
+          let compareCorrect = correctNum;
           for (let i = 0; i < word_div.length; i++) {
             if (word_div[i].style.display !== 'none') {
               if (input === word_div[i].innerText) {
                 word_div[i].style.display = 'none';
                 correctNum++;
-                correctBoard.innerHTML = correctNum;
+                correctBoard.innerText = correctNum;
                 score += WORD_SCORE;
-                scoreBoard.innerHTML = score;
+                scoreBoard.innerText = score;
                 break;
               } else {
                 // wrongNum++;
@@ -80,6 +81,11 @@ function run() {
               }
             }
           }
+          if (compareCorrect === correctNum) {
+            wrongNum++;
+            wrongBoard.innerText = wrongNum;
+          }
+          accuracyBoard.innerText = ((correctNum / (correctNum + wrongNum)) * 100).toFixed(2);
         }
 
         //엔터키가 두번 눌려졌을 때
@@ -108,6 +114,10 @@ function moveDiv() {
         pos = div[i].style.top;
         let temp = pos.replace('px', '');
         div[i].style.top = temp++ + speed[i] + 'px';
+
+        if ('680px' === div[i].style.top) {
+          div[i].style.display = 'none';
+        }
       }
     }
   }
