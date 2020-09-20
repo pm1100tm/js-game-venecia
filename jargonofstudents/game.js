@@ -2,6 +2,7 @@
 
 'use strict';
 
+const main = document.querySelector('.main');
 const gameDisplay = document.querySelector('.game-display');
 const inputWord = document.querySelector('.word');
 const screen = document.querySelector('.game-screen');
@@ -9,17 +10,24 @@ const correctBoard = document.querySelector('.correct');
 const wrongBoard = document.querySelector('.wrong');
 const accuracyBoard = document.querySelector('.acc');
 const scoreBoard = document.querySelector('.scoreboard');
+const typingArea = document.querySelector('.typing-area');
 const timer = document.querySelector('.about-time');
 const gameover = document.querySelector('.game-over');
+const gameover_content = document.querySelector('.game-over-content');
+const lifeT = document.querySelectorAll('.livecount');
+const sub_info = document.querySelector('.sub-info');
+const btn_yes = document.querySelector('.gameover-yes');
+const btn_no = document.querySelector('.gameover-no');
 
 // 상수
 const TIME_COUNT_DOWN = 1000;
 const TIME_ZERO = 0;
 const LV_ONE_WORDS = 50;
 const WORD_SCORE = 10;
+const CHECK_IS_PLAY_TIME = 10;
 
 // 변수
-let time = 5;
+let time = 30;
 let score = 0;
 let correctNum = 0;
 let wrongNum = 0;
@@ -34,17 +42,30 @@ let word_div = [];
 let speed = [];
 let enterPressed = 0;
 let countWord = 0;
-
-//초기화
-// init();
+let life = 5;
 
 //게임 세팅
 function init() {
+  main.style.display = 'none';
   gameDisplay.style.display = 'flex';
   getWords();
   arrangeWords(LV_ONE_WORDS);
   run();
 }
+
+btn_yes.addEventListener('click', () => {
+  gameover.style.display = 'none';
+  gameover_content.style.display = 'none';
+  init();
+});
+
+btn_no.addEventListener('click', () => {
+  gameover.style.display = 'none';
+  gameover_content.style.display = 'none';
+  gameDisplay.style.display = 'none';
+  main.style.display = 'flex';
+  isPlaying = false;
+});
 
 // 게임 시작
 function run() {
@@ -58,7 +79,7 @@ function run() {
   } else {
     inputWord.focus();
     timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
-    checkPlayInterval = setInterval(checkIsPlaying, 10);
+    checkPlayInterval = setInterval(checkIsPlaying, CHECK_IS_PLAY_TIME);
     moveDiv(isPlaying);
     inputWord.addEventListener('keypress', (event) => {
       let keyCode = event.keyCode || event.which;
@@ -67,7 +88,7 @@ function run() {
           enterPressed++;
           let input = inputWord.value.trim();
           if ('' === input) {
-            console.log('no input');
+            // console.log('no input');
           } else {
             inputWord.value = '';
             let compareCorrect = correctNum;
@@ -124,12 +145,12 @@ function moveDiv(flag) {
   let divLength = div.length;
 
   for (let i = 0; i < div.length; i++) {
-    speed[i] = Math.floor(Math.random() * 5) + 1;
+    speed[i] = Math.floor(Math.random() * 10) + 2;
   }
 
-  let checkMoveDiv = setInterval(frame, 100);
+  let removeFlg = false;
+  let checkMoveDiv = setInterval(frame, 200);
   function frame() {
-    console.log(isPlaying);
     if (divLength === 0 || !isPlaying) {
       clearInterval(checkMoveDiv);
       isPlaying = false;
@@ -138,11 +159,27 @@ function moveDiv(flag) {
         let divTop = div[i].style.top;
         let temp = divTop.replace('px', '');
         div[i].style.top = temp++ + speed[i] + 'px';
-
-        if ('680px' === div[i].style.top) {
-          div[i].style.display = 'none';
+        // console.log(typingArea.offsetTop);
+        // console.log(div[0].offsetTop + ' ' + div[0].innerText);
+        // div[0].style.color = 'red';
+        if (typingArea.offsetTop + 10 <= div[i].offsetTop) {
+          div[i].style.color = 'red';
+          div[i].remove();
+          life > 1 ? life-- : (isPlaying = false);
+          lifeT[life].textContent = '';
           divLength--;
-          console.log(divLength);
+          // function flag() {
+          //   return new Promise((resolve, reject) => {
+          //     resolve(div[i]);
+          //     reject(new Error('no access..'));
+          //   });
+          // }
+          // let flagResult = flag();
+          // flagResult.then(() => {
+          //   div[i].remove();
+          //   life > 1 ? life-- : (isPlaying = false);
+          //   divLength--;
+          // });
         }
       }
     }
@@ -163,17 +200,19 @@ function countDown() {
 }
 
 function checkIsPlaying() {
-  if (!isPlaying) {
+  if (!isPlaying || life < 1) {
+    // 버그 수정
+    lifeT[0].textContent = '';
+
     gameOver();
     clearInterval(timeInterval);
   }
 }
 
 function gameOver() {
-  gameDisplay.style.clientHeight;
-  gameover.className = 'game-over-active';
-  gameover.clientWidth = gameDisplay.clientWidth;
-  gameover.clientHeight = gameDisplay.clientHeight;
+  // isPlaying = false;
+  gameover.classList.add('game-over-active');
+  gameover_content.classList.add('quit-game-active');
 }
 
 function getWords() {
@@ -273,6 +312,13 @@ function getWords() {
     '주말출근',
     '여행',
     '자전거',
-    '금연'
+    '싹쓰리',
+    '1일1깡'
   ];
 }
+
+function always() {
+  sub_info.style.color = 'red';
+  sub_info.innerHTML = '현재 게임 종료 후 다시하기 기능에 문제가 있습니다. 밖으로 빠져나간 후 다시 실행해주세요.';
+}
+always();

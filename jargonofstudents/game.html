@@ -43,16 +43,26 @@
         </div>
         <div class="lives">
           남은 목숨:
-          <span class="livecount"></span>
+          <div class="lives-bar">
+            <span class="livecount">●</span>
+            <span class="livecount">●</span>
+            <span class="livecount">●</span>
+            <span class="livecount">●</span>
+            <span class="livecount">●</span>
+          </div>
         </div>
         <div class="trick">trick</div>
       </div>
       <!-- 게임 화면 -->
-      <div class="game-screen"></div>
-      <!-- 타이핑 공간 -->
-      <div class="typeing-area">
-        <input type="text" class="word" value="" />
+      <div class="game-screen">
+        <div class="typing-area">
+          <input type="text" class="word" value="" />
+        </div>
       </div>
+      <!-- 타이핑 공간 -->
+      <!-- <div class="typing-area">
+        <input type="text" class="word" value="" />
+      </div> -->
       <!-- 게임 추가 정보 -->
       <div class="bottom">
         <div class="sub-info">만들고 있다 만들고 있다 만들고 있다 만들고 있다</div>
@@ -61,7 +71,12 @@
           <span class="about-time">0</span>
         </div>
       </div>
-      <div class="game-over game-over-active"></div>
+      <div class="game-over"></div>
+      <div class="game-over-content">
+        <div class="desc-game-over">게임이 종료되었습니다. 다시 하시겠습니까?</div>
+        <button class="btn-game-over gameover-yes">네</button>
+        <button class="btn-game-over gameover-no">아니요</button>
+      </div>
     </section>
   </body>
 </html>

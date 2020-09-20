@@ -53,8 +53,8 @@ body {
   max-height: 800px;
   min-height: 800px;
   margin: 30px auto;
-  /* display: flex; */
   flex-direction: column;
+  position: relative;
 }
 
 .title {
@@ -78,22 +78,30 @@ body {
   padding-left: 10px;
 }
 
+.lives-bar {
+  display: inline;
+}
+
 .trick {
   opacity: 0;
 }
 
 .game-screen {
-  height: 700px;
+  height: 740px;
   background-color: olivedrab;
   position: relative;
   overflow: hidden;
 }
 
-.typeing-area {
+.typing-area {
+  position: absolute;
   min-height: 40px;
   max-height: 40px;
   text-align: center;
   background-color: olivedrab;
+  display: block;
+  top: 680px;
+  left: 500px;
 }
 
 .word {
@@ -129,6 +137,49 @@ body {
   display: block;
   position: absolute;
   background-color: black;
-  opacity: 0.7;
-  z-index: 99;
+  opacity: 0.4;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.game-over-content {
+  display: none;
+  position: relative;
+}
+
+.quit-game-active {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+  background-color: transparent;
+}
+
+.desc-game-over {
+  color: yellow;
+  font-size: 1.4rem;
+  z-index: 100;
+  padding: 20px;
+}
+
+.btn-game-over {
+  height: 50px;
+  width: 300px;
+  color: black;
+  background-color: white;
+  border-style: double;
+  box-shadow: 3px 6px black;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
 }
