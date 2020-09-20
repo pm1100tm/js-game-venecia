@@ -1,0 +1,73 @@
+#제목 : 급식체 부수기
+
+JavaScript Map 객체를 활용.
+
+—화면 쪽
+div 를 랜덤하게 만든다.
+모든 div 의 공통 속성은
+position : absolute
+top : random
+left : random
+
+—로직
+class 하나 만들자.
+key
+mean
+score
+top
+left
+font-family
+font-size
+font-weight
+
+Map 에 key value 를 활용하여 단어와 뜻을 저장한다.
+//파일을 읽어와서 저장한다.
+
+key 를 넣고 div의 innerHTML 에 넣고 화면에 표시한다.
+
+
+#이 메서드 어려웠음
+function moveDiv() {
+  let div = document.querySelectorAll('.dynamic-word-div');
+  let pos = 0;
+
+  // 각 디브가 고정 스피드를 갖을 수 있도록 하기 위한 로직.
+  // 디브 배열 인덱스와 속도 배열 인덱스를 맞춰서, 속도 값을 랜덤으로 얻음.
+  for (let i = 0; i < div.length; i++) {
+    speed[i] = Math.floor(Math.random() * 2) + 1;
+  }
+
+  let id = setInterval(frame, 100);
+  function frame() {
+    if (pos == 650) {
+      clearInterval(id);
+    } else {
+      for (let i = 0; i < div.length; i++) {
+        pos = div[i].style.top;
+
+        // 포지션 위치를 가속하려 할 때, 포지션 값의 리턴값은 스트링 (px 가 딸려옴). px 를 제거해줘야 했다.
+        let temp = pos.replace('px', '');
+
+        // 중요한 변수 - 일단 각 디브가 1px 씩 움직이는 상태에서 다시 움직여야 함.
+        // temp++;
+
+        // 첫번째 했던 방법.. 뭔가 이상함
+        // let test = Math.floor(Math.random() * 1) + Math.floor(Math.random() * 14);
+        // div[i].style.top = temp++ + test + 'px';
+
+        // 두번째 했던 방법(단 frame 위에 let speed 배열 변수 만들어야 함): 하나의 디브가 내려갈 때 속도가 랜덤임
+        // 각 디브가 고정 스피드를 가지되, 다른 스피드를 가지도록 하고 싶었다.
+        // speed[i] = Math.floor(Math.random() * 5) + 1;
+        // div[i].style.top = temp++ + speed[i] + 'px';
+
+        div[i].style.top = temp++ + speed[i] + 'px';
+      }
+      // let temp1 = div[0].style.top;
+      // temp1++;
+      // div[0].style.top = temp1 + 'px';
+    }
+  }
+}
+
+
+
