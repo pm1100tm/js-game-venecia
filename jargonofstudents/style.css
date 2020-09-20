@@ -13,7 +13,7 @@
 }
 
 body {
-  background-color: darkgreen;
+  background-color: gray;
   box-sizing: border-box;
 }
 
@@ -88,7 +88,7 @@ body {
 
 .game-screen {
   height: 740px;
-  background-color: olivedrab;
+  background-color: deepskyblue;
   position: relative;
   overflow: hidden;
 }
@@ -98,7 +98,7 @@ body {
   min-height: 40px;
   max-height: 40px;
   text-align: center;
-  background-color: olivedrab;
+  background-color: deepskyblue;
   display: block;
   top: 680px;
   left: 500px;
@@ -182,4 +182,8 @@ body {
   text-decoration: none;
   font-size: 1.2rem;
   margin-bottom: 10px;
+}
+
+.audio {
+  display: none;
 }

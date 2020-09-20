@@ -19,6 +19,10 @@ const sub_info = document.querySelector('.sub-info');
 const btn_yes = document.querySelector('.gameover-yes');
 const btn_no = document.querySelector('.gameover-no');
 
+const bg = document.querySelector('.bg');
+const ok = document.querySelector('.ok');
+const end = document.querySelector('.end');
+
 // 상수
 const TIME_COUNT_DOWN = 1000;
 const TIME_ZERO = 0;
@@ -44,8 +48,14 @@ let enterPressed = 0;
 let countWord = 0;
 let life = 5;
 
+//배경음악 소리 작게
+
 //게임 세팅
 function init() {
+  bg.src = '';
+  ok.src = '';
+  end.scr = '';
+
   main.style.display = 'none';
   gameDisplay.style.display = 'flex';
   getWords();
@@ -69,6 +79,10 @@ btn_no.addEventListener('click', () => {
 
 // 게임 시작
 function run() {
+  bg.src = 'bg.mp3';
+  bg.volume = 0.1;
+  ok.volumn = 0.1;
+  end.volumn = 0.1;
   isPlaying = changeStatus(isPlaying);
   // inputWord.focus();
   // timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
@@ -95,6 +109,7 @@ function run() {
             for (let i = 0; i < word_div.length; i++) {
               if (word_div[i].style.display !== 'none') {
                 if (input === word_div[i].innerText) {
+                  ok.src = 'ok.mp3';
                   word_div[i].style.display = 'none';
                   correctNum++;
                   correctBoard.innerText = correctNum;
@@ -138,7 +153,7 @@ function arrangeWords(LV_ONE_WORDS) {
   }
 }
 
-function moveDiv(flag) {
+function moveDiv() {
   // FIX ME::
   // let div = document.querySelectorAll('.dynamic-word-div:not([style="display:none;"])');
   let div = document.querySelectorAll('.dynamic-word-div');
@@ -148,7 +163,6 @@ function moveDiv(flag) {
     speed[i] = Math.floor(Math.random() * 10) + 2;
   }
 
-  let removeFlg = false;
   let checkMoveDiv = setInterval(frame, 200);
   function frame() {
     if (divLength === 0 || !isPlaying) {
@@ -201,7 +215,8 @@ function countDown() {
 
 function checkIsPlaying() {
   if (!isPlaying || life < 1) {
-    // 버그 수정
+    // 버그 수정 코드
+    bg.src = '';
     lifeT[0].textContent = '';
 
     gameOver();
@@ -209,8 +224,14 @@ function checkIsPlaying() {
   }
 }
 
+let pauseEnd = 0;
 function gameOver() {
   // isPlaying = false;
+  if (!pauseEnd) {
+    end.src = 'end.mp3';
+  }
+  pauseEnd = 1;
+
   gameover.classList.add('game-over-active');
   gameover_content.classList.add('quit-game-active');
 }
@@ -257,7 +278,7 @@ function getWords() {
     '슬랙',
     '파인더',
     '크롬브라우저',
-    '파이어복스브라우저',
+    '파이어폭스브라우저',
     '사파리',
     '애플스토어',
     '안드로이드',
@@ -277,7 +298,6 @@ function getWords() {
     '물의도시',
     '베니스',
     '이탈리아',
-    '화려했던',
     '뽀글뽀글',
     '블랙커피',
     '끝까지',
