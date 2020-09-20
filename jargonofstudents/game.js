@@ -2,7 +2,7 @@
 
 'use strict';
 
-// 유저 입력 객체
+const gameDisplay = document.querySelector('.game-display');
 const inputWord = document.querySelector('.word');
 const screen = document.querySelector('.game-screen');
 const correctBoard = document.querySelector('.correct');
@@ -10,15 +10,16 @@ const wrongBoard = document.querySelector('.wrong');
 const accuracyBoard = document.querySelector('.acc');
 const scoreBoard = document.querySelector('.scoreboard');
 const timer = document.querySelector('.about-time');
+const gameover = document.querySelector('.game-over');
 
 // 상수
 const TIME_COUNT_DOWN = 1000;
 const TIME_ZERO = 0;
-const LV_ONE_WORDS = 30;
+const LV_ONE_WORDS = 50;
 const WORD_SCORE = 10;
 
 // 변수
-let time = 3;
+let time = 5;
 let score = 0;
 let correctNum = 0;
 let wrongNum = 0;
@@ -27,17 +28,19 @@ let accuracy = 0;
 let isPlaying = false;
 let timeInterval = 0;
 let moveInterval = 0;
+let checkPlayInterval = 0;
 let words = [];
 let word_div = [];
 let speed = [];
-let positionChangeValue = 2;
 let enterPressed = 0;
+let countWord = 0;
 
 //초기화
-init();
+// init();
 
 //게임 세팅
 function init() {
+  gameDisplay.style.display = 'flex';
   getWords();
   arrangeWords(LV_ONE_WORDS);
   run();
@@ -46,80 +49,58 @@ function init() {
 // 게임 시작
 function run() {
   isPlaying = changeStatus(isPlaying);
-  inputWord.focus();
-  timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
-  moveDiv();
+  // inputWord.focus();
+  // timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
+  // checkPlayInterval = setInterval(checkIsPlaying, 10);
 
-  // inputWord.addEventListener('keydown', (event) => {
-  //   wordCheckListner(event);
-  // });
-
-  inputWord.addEventListener('keypress', (event) => {
-    let keyCode = event.keyCode || event.which;
-    if (keyCode === 13) {
-      if (enterPressed === 0) {
-        enterPressed++;
-        let input = inputWord.value.trim();
-        if ('' === input) {
-          console.log('no input');
-        } else {
-          inputWord.value = '';
-          let compareCorrect = correctNum;
-          for (let i = 0; i < word_div.length; i++) {
-            if (word_div[i].style.display !== 'none') {
-              if (input === word_div[i].innerText) {
-                word_div[i].style.display = 'none';
-                correctNum++;
-                correctBoard.innerText = correctNum;
-                score += WORD_SCORE;
-                scoreBoard.innerText = score;
-                break;
-              } else {
-                // wrongNum++;
-                // wrongBoard.innerHTML = wrongNum;
-                // break;
+  if (!isPlaying) {
+    return;
+  } else {
+    inputWord.focus();
+    timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
+    checkPlayInterval = setInterval(checkIsPlaying, 10);
+    moveDiv(isPlaying);
+    inputWord.addEventListener('keypress', (event) => {
+      let keyCode = event.keyCode || event.which;
+      if (keyCode === 13) {
+        if (enterPressed === 0) {
+          enterPressed++;
+          let input = inputWord.value.trim();
+          if ('' === input) {
+            console.log('no input');
+          } else {
+            inputWord.value = '';
+            let compareCorrect = correctNum;
+            for (let i = 0; i < word_div.length; i++) {
+              if (word_div[i].style.display !== 'none') {
+                if (input === word_div[i].innerText) {
+                  word_div[i].style.display = 'none';
+                  correctNum++;
+                  correctBoard.innerText = correctNum;
+                  score += WORD_SCORE;
+                  scoreBoard.innerText = score;
+                  break;
+                } else {
+                  // wrongNum++;
+                  // wrongBoard.innerHTML = wrongNum;
+                  // break;
+                }
               }
             }
+            if (compareCorrect === correctNum) {
+              wrongNum++;
+              wrongBoard.innerText = wrongNum;
+            }
+            accuracyBoard.innerText = ((correctNum / (correctNum + wrongNum)) * 100).toFixed(2);
           }
-          if (compareCorrect === correctNum) {
-            wrongNum++;
-            wrongBoard.innerText = wrongNum;
-          }
-          accuracyBoard.innerText = ((correctNum / (correctNum + wrongNum)) * 100).toFixed(2);
+
+          //엔터키가 두번 눌려졌을 때
+        } else if (enterPressed === 1) {
+          event.preventDefault();
         }
-
-        //엔터키가 두번 눌려졌을 때
-      } else if (enterPressed === 1) {
-        event.preventDefault();
+        enterPressed--;
       }
-      enterPressed--;
-    }
-  });
-}
-
-function moveDiv() {
-  let div = document.querySelectorAll('.dynamic-word-div');
-  let pos = 0;
-
-  for (let i = 0; i < div.length; i++) {
-    speed[i] = Math.floor(Math.random() * 2) + 1;
-  }
-
-  let id = setInterval(frame, 100);
-  function frame() {
-    if (pos == 700) {
-      clearInterval(id);
-    } else {
-      for (let i = 0; i < div.length; i++) {
-        pos = div[i].style.top;
-        let temp = pos.replace('px', '');
-        div[i].style.top = temp++ + speed[i] + 'px';
-
-        if ('680px' === div[i].style.top) {
-          div[i].style.display = 'none';
-        }
-      }
-    }
+    });
   }
 }
 
@@ -130,9 +111,41 @@ function arrangeWords(LV_ONE_WORDS) {
     word_div[i].innerText = words[randomIndex];
     screen.appendChild(word_div[i]);
     word_div[i].className = 'dynamic-word-div';
-    word_div[i].style.fontSize = Math.floor(Math.random() * 20) + 12 + 'px';
-    word_div[i].style.top = Math.floor(Math.random() * screen.clientHeight) + 'px';
+    word_div[i].style.fontSize = Math.floor(Math.random() * 20) + 14 + 'px';
+    word_div[i].style.top = Math.floor(Math.random() * screen.clientHeight) - screen.clientHeight + 'px';
     word_div[i].style.left = Math.floor(Math.random() * (screen.clientWidth - word_div[i].clientWidth)) + 'px';
+  }
+}
+
+function moveDiv(flag) {
+  // FIX ME::
+  // let div = document.querySelectorAll('.dynamic-word-div:not([style="display:none;"])');
+  let div = document.querySelectorAll('.dynamic-word-div');
+  let divLength = div.length;
+
+  for (let i = 0; i < div.length; i++) {
+    speed[i] = Math.floor(Math.random() * 5) + 1;
+  }
+
+  let checkMoveDiv = setInterval(frame, 100);
+  function frame() {
+    console.log(isPlaying);
+    if (divLength === 0 || !isPlaying) {
+      clearInterval(checkMoveDiv);
+      isPlaying = false;
+    } else {
+      for (let i = 0; i < div.length; i++) {
+        let divTop = div[i].style.top;
+        let temp = divTop.replace('px', '');
+        div[i].style.top = temp++ + speed[i] + 'px';
+
+        if ('680px' === div[i].style.top) {
+          div[i].style.display = 'none';
+          divLength--;
+          console.log(divLength);
+        }
+      }
+    }
   }
 }
 
@@ -149,6 +162,20 @@ function countDown() {
   }
 }
 
+function checkIsPlaying() {
+  if (!isPlaying) {
+    gameOver();
+    clearInterval(timeInterval);
+  }
+}
+
+function gameOver() {
+  gameDisplay.style.clientHeight;
+  gameover.className = 'game-over-active';
+  gameover.clientWidth = gameDisplay.clientWidth;
+  gameover.clientHeight = gameDisplay.clientHeight;
+}
+
 function getWords() {
   words = [
     '추억의',
@@ -158,7 +185,8 @@ function getWords() {
     '달콤하다',
     '쓰다',
     '맵다',
-    '이름',
+    '짜다',
+    '자기소개',
     '에이치티엠엘',
     '씨에스에스',
     '자바스크립트',
@@ -215,6 +243,36 @@ function getWords() {
     '블랙커피',
     '끝까지',
     '버그',
-    '해결사'
+    '해결사',
+    '카카오톡',
+    '라인',
+    '네이버',
+    '다음',
+    '배달의 민족',
+    '딜리버리히어로',
+    '디스플레이',
+    '플랙스',
+    '그리드',
+    '포지션',
+    '앱솔루트',
+    '패딩제로',
+    '마진제로',
+    '콜백함수',
+    '비동기처리',
+    '동기처리',
+    '콜백지옥',
+    '프로미스',
+    '어씽크',
+    '어웨이트',
+    '클로져',
+    '프로토타입',
+    '문과출신',
+    '개발자',
+    '프리랜서',
+    '밤샘',
+    '주말출근',
+    '여행',
+    '자전거',
+    '금연'
   ];
 }

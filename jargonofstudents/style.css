@@ -27,7 +27,6 @@ body {
   align-items: center;
   color: white;
   text-shadow: 3px 6px black;
-  display: none;
 }
 
 .main > div {
@@ -48,13 +47,13 @@ body {
 }
 
 .game-display {
-  /* display: none; */
+  display: none;
   background-color: floralwhite;
   max-width: 1200px;
   max-height: 800px;
   min-height: 800px;
   margin: 30px auto;
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
 }
 
@@ -119,4 +118,17 @@ body {
   display: flex;
   justify-content: space-between;
   z-index: 2;
+}
+
+.game-over {
+  display: none;
+  position: relative;
+}
+
+.game-over-active {
+  display: block;
+  position: absolute;
+  background-color: black;
+  opacity: 0.7;
+  z-index: 99;
 }
