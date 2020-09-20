@@ -159,8 +159,9 @@ function moveDiv() {
   let div = document.querySelectorAll('.dynamic-word-div');
   let divLength = div.length;
 
+  // 각 디브 랜덤 속도 세팅
   for (let i = 0; i < div.length; i++) {
-    speed[i] = Math.floor(Math.random() * 10) + 2;
+    speed[i] = Math.floor(Math.random() * 8) + 2;
   }
 
   let checkMoveDiv = setInterval(frame, 200);
@@ -339,6 +340,6 @@ function getWords() {
 
 function always() {
   sub_info.style.color = 'red';
-  sub_info.innerHTML = '현재 게임 종료 후 다시하기 기능에 문제가 있습니다. 밖으로 빠져나간 후 다시 실행해주세요.';
+  sub_info.innerHTML = '현재 게임 종료 후 다시하기 기능에 문제가 있습니다. 새로 고침 해주세요..ㅠ';
 }
 always();
