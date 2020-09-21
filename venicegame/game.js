@@ -31,7 +31,7 @@ const WORD_SCORE = 10;
 const CHECK_IS_PLAY_TIME = 10;
 
 // 변수
-let time = 30;
+let time;
 let score = 0;
 let correctNum = 0;
 let wrongNum = 0;
@@ -48,34 +48,22 @@ let enterPressed = 0;
 let countWord = 0;
 let life = 5;
 
-//배경음악 소리 작게
-
 //게임 세팅
 function init() {
   bg.src = '';
   ok.src = '';
   end.scr = '';
-
+  time = 20;
+  words = [];
+  word_div = [];
   main.style.display = 'none';
   gameDisplay.style.display = 'flex';
   getWords();
+  initDisplay();
   arrangeWords(LV_ONE_WORDS);
+  always();
   run();
 }
-
-btn_yes.addEventListener('click', () => {
-  gameover.style.display = 'none';
-  gameover_content.style.display = 'none';
-  init();
-});
-
-btn_no.addEventListener('click', () => {
-  gameover.style.display = 'none';
-  gameover_content.style.display = 'none';
-  gameDisplay.style.display = 'none';
-  main.style.display = 'flex';
-  isPlaying = false;
-});
 
 // 게임 시작
 function run() {
@@ -84,10 +72,9 @@ function run() {
   ok.volumn = 0.1;
   end.volumn = 0.1;
   isPlaying = changeStatus(isPlaying);
-  // inputWord.focus();
   // timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
   // checkPlayInterval = setInterval(checkIsPlaying, 10);
-
+  console.log('run: ' + isPlaying);
   if (!isPlaying) {
     return;
   } else {
@@ -107,20 +94,18 @@ function run() {
             inputWord.value = '';
             let compareCorrect = correctNum;
             for (let i = 0; i < word_div.length; i++) {
-              if (word_div[i].style.display !== 'none') {
-                if (input === word_div[i].innerText) {
-                  ok.src = 'ok.mp3';
-                  word_div[i].style.display = 'none';
-                  correctNum++;
-                  correctBoard.innerText = correctNum;
-                  score += WORD_SCORE;
-                  scoreBoard.innerText = score;
-                  break;
-                } else {
-                  // wrongNum++;
-                  // wrongBoard.innerHTML = wrongNum;
-                  // break;
-                }
+              if (input === word_div[i].innerText) {
+                ok.src = 'ok.mp3';
+                word_div[i].remove();
+                correctNum++;
+                correctBoard.innerText = correctNum;
+                score += WORD_SCORE;
+                scoreBoard.innerText = score;
+                break;
+              } else {
+                // wrongNum++;
+                // wrongBoard.innerHTML = wrongNum;
+                // break;
               }
             }
             if (compareCorrect === correctNum) {
@@ -153,14 +138,39 @@ function arrangeWords(LV_ONE_WORDS) {
   }
 }
 
+function initDisplay() {
+  let removeDiv = document.querySelectorAll('.dynamic-word-div');
+  if (0 < removeDiv.length) {
+    for (let i = 0; i < removeDiv.length; i++) {
+      screen.removeChild(removeDiv[i]);
+    }
+    word_div = [];
+  }
+  gameover.classList.remove('game-over-active');
+  gameover_content.classList.remove('quit-game-active');
+}
+
+btn_yes.addEventListener('click', () => {
+  gameover.classList.remove('game-over-active');
+  gameover_content.classList.remove('quit-game-active');
+  init();
+});
+
+btn_no.addEventListener('click', () => {
+  gameover.classList.remove('game-over-active');
+  gameover_content.classList.remove('quit-game-active');
+  gameDisplay.style.display = 'none';
+  main.style.display = 'flex';
+  isPlaying = false;
+});
+
 function moveDiv() {
   // FIX ME::
-  // let div = document.querySelectorAll('.dynamic-word-div:not([style="display:none;"])');
-  let div = document.querySelectorAll('.dynamic-word-div');
-  let divLength = div.length;
+  let word_div = document.querySelectorAll('.dynamic-word-div');
+  let divLength = word_div.length;
 
   // 각 디브 랜덤 속도 세팅
-  for (let i = 0; i < div.length; i++) {
+  for (let i = 0; i < word_div.length; i++) {
     speed[i] = Math.floor(Math.random() * 8) + 2;
   }
 
@@ -170,31 +180,16 @@ function moveDiv() {
       clearInterval(checkMoveDiv);
       isPlaying = false;
     } else {
-      for (let i = 0; i < div.length; i++) {
-        let divTop = div[i].style.top;
+      for (let i = 0; i < word_div.length; i++) {
+        let divTop = word_div[i].style.top;
         let temp = divTop.replace('px', '');
-        div[i].style.top = temp++ + speed[i] + 'px';
-        // console.log(typingArea.offsetTop);
-        // console.log(div[0].offsetTop + ' ' + div[0].innerText);
-        // div[0].style.color = 'red';
-        if (typingArea.offsetTop + 10 <= div[i].offsetTop) {
-          div[i].style.color = 'red';
-          div[i].remove();
+        word_div[i].style.top = temp++ + speed[i] + 'px';
+        if (typingArea.offsetTop + 10 <= word_div[i].offsetTop) {
+          word_div[i].style.color = 'red';
+          word_div[i].remove();
           life > 1 ? life-- : (isPlaying = false);
           lifeT[life].textContent = '';
           divLength--;
-          // function flag() {
-          //   return new Promise((resolve, reject) => {
-          //     resolve(div[i]);
-          //     reject(new Error('no access..'));
-          //   });
-          // }
-          // let flagResult = flag();
-          // flagResult.then(() => {
-          //   div[i].remove();
-          //   life > 1 ? life-- : (isPlaying = false);
-          //   divLength--;
-          // });
         }
       }
     }
@@ -210,7 +205,7 @@ function countDown() {
   time > TIME_ZERO ? time-- : (isPlaying = false);
   if (!isPlaying) {
     time = TIME_ZERO;
-    clearInterval(timeInterval);
+    gameOver();
   }
 }
 
@@ -219,22 +214,28 @@ function checkIsPlaying() {
     // 버그 수정 코드
     bg.src = '';
     lifeT[0].textContent = '';
-
     gameOver();
-    clearInterval(timeInterval);
   }
 }
 
 let pauseEnd = 0;
 function gameOver() {
-  // isPlaying = false;
+  pauseEnd = 0;
   if (!pauseEnd) {
     end.src = 'end.mp3';
   }
   pauseEnd = 1;
+  bg.src = '';
 
+  clearInterval(timeInterval);
+  clearInterval(checkPlayInterval);
   gameover.classList.add('game-over-active');
   gameover_content.classList.add('quit-game-active');
+}
+
+function always() {
+  sub_info.style.color = 'red';
+  sub_info.innerHTML = '게임 시간이 다 되어, 게임 종료 후 다시 하기 기능을 수정하였습니다.';
 }
 
 function getWords() {
@@ -337,9 +338,3 @@ function getWords() {
     '1일1깡'
   ];
 }
-
-function always() {
-  sub_info.style.color = 'red';
-  sub_info.innerHTML = '현재 게임 종료 후 다시하기 기능에 문제가 있습니다. 새로 고침 해주세요..ㅠ';
-}
-always();

@@ -131,6 +131,7 @@ body {
 .game-over {
   display: none;
   position: relative;
+  z-index: 0;
 }
 
 .game-over-active {
@@ -148,6 +149,7 @@ body {
 .game-over-content {
   display: none;
   position: relative;
+  z-index: 0;
 }
 
 .quit-game-active {
