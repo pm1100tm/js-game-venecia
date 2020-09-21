@@ -60,10 +60,7 @@ function init() {
   bg.src = '';
   ok.src = '';
   end.scr = '';
-  complete.src = '';
-
-  // init variable
-  time = 5;
+  time = 20;
   score = 0;
   correctNum = 0;
   wrongNum = 0;
