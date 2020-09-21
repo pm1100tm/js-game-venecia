@@ -17,6 +17,10 @@ body {
   box-sizing: border-box;
 }
 
+.audio {
+  display: none;
+}
+
 .main {
   width: 100vw;
   height: 100vh;
@@ -128,7 +132,7 @@ body {
   z-index: 2;
 }
 
-.game-over {
+.game-over-screen {
   display: none;
   position: relative;
   z-index: 0;
@@ -166,14 +170,14 @@ body {
   background-color: transparent;
 }
 
-.desc-game-over {
+.gameover-desc {
   color: yellow;
   font-size: 1.4rem;
   z-index: 100;
   padding: 20px;
 }
 
-.btn-game-over {
+.btn-game-content {
   height: 50px;
   width: 300px;
   color: black;
@@ -184,8 +188,4 @@ body {
   text-decoration: none;
   font-size: 1.2rem;
   margin-bottom: 10px;
-}
-
-.audio {
-  display: none;
 }

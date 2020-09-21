@@ -12,8 +12,10 @@ const accuracyBoard = document.querySelector('.acc');
 const scoreBoard = document.querySelector('.scoreboard');
 const typingArea = document.querySelector('.typing-area');
 const timer = document.querySelector('.about-time');
-const gameover = document.querySelector('.game-over');
+const gameover_screen = document.querySelector('.game-over-screen');
 const gameover_content = document.querySelector('.game-over-content');
+const gameover_desc = document.querySelector('.gameover-desc');
+
 const lifeT = document.querySelectorAll('.livecount');
 const sub_info = document.querySelector('.sub-info');
 const btn_yes = document.querySelector('.gameover-yes');
@@ -22,6 +24,7 @@ const btn_no = document.querySelector('.gameover-no');
 const bg = document.querySelector('.bg');
 const ok = document.querySelector('.ok');
 const end = document.querySelector('.end');
+const complete = document.querySelector('.complete');
 
 // 상수
 const TIME_COUNT_DOWN = 1000;
@@ -29,6 +32,9 @@ const TIME_ZERO = 0;
 const LV_ONE_WORDS = 50;
 const WORD_SCORE = 10;
 const CHECK_IS_PLAY_TIME = 10;
+
+const GAMEOVER_DESC_RETRY = '게임이 종료되었습니다. 다시 하시겠습니까?';
+const GAMEOVER_DESC_SUCCESS = '축하합니다..! 다음 레벨에 도전 하시겠습니까?';
 
 // 변수
 let time;
@@ -50,10 +56,14 @@ let life = 5;
 
 //게임 세팅
 function init() {
+  // init audio
   bg.src = '';
   ok.src = '';
   end.scr = '';
-  time = 20;
+  complete.src = '';
+
+  // init variable
+  time = 5;
   score = 0;
   correctNum = 0;
   wrongNum = 0;
@@ -76,6 +86,8 @@ function run() {
   bg.volume = 0.1;
   ok.volumn = 0.1;
   end.volumn = 0.1;
+  complete.volumn = 0.2;
+
   isPlaying = changeStatus(isPlaying);
   console.log('run: ' + isPlaying);
   if (!isPlaying) {
@@ -164,18 +176,20 @@ function initDisplay() {
     }
     word_div = [];
   }
-  gameover.classList.remove('game-over-active');
+  gameover_screen.classList.remove('game-over-active');
   gameover_content.classList.remove('quit-game-active');
 }
 
+// 선택 버튼 - yes
 btn_yes.addEventListener('click', () => {
-  gameover.classList.remove('game-over-active');
+  gameover_screen.classList.remove('game-over-active');
   gameover_content.classList.remove('quit-game-active');
   init();
 });
 
+// 선택 버튼 - no
 btn_no.addEventListener('click', () => {
-  gameover.classList.remove('game-over-active');
+  gameover_screen.classList.remove('game-over-active');
   gameover_content.classList.remove('quit-game-active');
   gameDisplay.style.display = 'none';
   main.style.display = 'flex';
@@ -240,15 +254,23 @@ let pauseEnd = 0;
 function gameOver() {
   pauseEnd = 0;
   if (!pauseEnd) {
-    end.src = 'end.mp3';
+    life > 0 ? (complete.src = 'complete.mp3') : (end.src = 'end.mp3');
   }
   pauseEnd = 1;
   bg.src = '';
 
   clearInterval(timeInterval);
   clearInterval(checkPlayInterval);
-  gameover.classList.add('game-over-active');
-  gameover_content.classList.add('quit-game-active');
+
+  if (life > 0) {
+    gameover_desc.innerText = GAMEOVER_DESC_SUCCESS;
+    gameover_screen.classList.add('game-over-active');
+    gameover_content.classList.add('quit-game-active');
+  } else {
+    gameover_desc.innerText = GAMEOVER_DESC_RETRY;
+    gameover_screen.classList.add('game-over-active');
+    gameover_content.classList.add('quit-game-active');
+  }
 }
 
 function always() {
