@@ -44,8 +44,8 @@ let wrongNum;
 let accuracy;
 
 let isPlaying = false;
+let isNextLv = false;
 let timeInterval = 0;
-let moveInterval = 0;
 let checkPlayInterval = 0;
 let words = [];
 let word_div = [];
@@ -60,11 +60,14 @@ function init() {
   bg.src = '';
   ok.src = '';
   end.scr = '';
-  time = 20;
-  score = 0;
-  correctNum = 0;
-  wrongNum = 0;
-  accuracy = 0;
+  time = 5;
+  if (!isNextLv) {
+    score = 0;
+    correctNum = 0;
+    wrongNum = 0;
+    accuracy = 0;
+    life = 5;
+  }
 
   words = [];
   word_div = [];
@@ -121,7 +124,8 @@ function run() {
               wrongNum++;
               wrongBoard.innerText = wrongNum;
             }
-            accuracyBoard.innerText = ((correctNum / (correctNum + wrongNum)) * 100).toFixed(2);
+            accuracy = ((correctNum / (correctNum + wrongNum)) * 100).toFixed(2);
+            accuracyBoard.innerText = accuracy;
           }
 
           //엔터키가 두번 눌려졌을 때
@@ -179,6 +183,9 @@ function initDisplay() {
 
 // 선택 버튼 - yes
 btn_yes.addEventListener('click', () => {
+  if (gameover_desc.innerText === GAMEOVER_DESC_SUCCESS) {
+    isNextLv = true;
+  }
   gameover_screen.classList.remove('game-over-active');
   gameover_content.classList.remove('quit-game-active');
   init();
@@ -190,6 +197,7 @@ btn_no.addEventListener('click', () => {
   gameover_content.classList.remove('quit-game-active');
   gameDisplay.style.display = 'none';
   main.style.display = 'flex';
+  isNextLv = false;
   isPlaying = false;
 });
 
