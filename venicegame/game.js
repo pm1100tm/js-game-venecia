@@ -16,8 +16,6 @@ const timer = document.querySelector('.about-time');
 const gameover_screen = document.querySelector('.game-over-screen');
 const gameover_content = document.querySelector('.game-over-content');
 const gameover_desc = document.querySelector('.gameover-desc');
-
-// const lifeT = document.querySelectorAll('.livecount');
 const sub_info = document.querySelector('.sub-info');
 const btn_yes = document.querySelector('.gameover-yes');
 const btn_no = document.querySelector('.gameover-no');
@@ -33,10 +31,18 @@ const TIME_ZERO = 0;
 const LV_ONE_WORDS = 50;
 const WORD_SCORE = 10;
 const CHECK_IS_PLAY_TIME = 10;
-
+const COLOR_BLUE = 'blue';
+const LIFE_ICON = '●';
 const GAMEOVER_DESC_RETRY = '게임이 종료되었습니다. 다시 하시겠습니까?';
 const GAMEOVER_DESC_SUCCESS = '축하합니다..! 다음 레벨에 도전 하시겠습니까?';
-const LIFE_ICON = '●';
+const NOTICE = '정상적인 기능을 하고 있습니다. 문제가 있다면 깃헙 이슈에 기재해주세요.';
+const TEXT_BLANK = '';
+const VOL = '0.1';
+const AUDIO_BG = 'bg.mp3';
+const AUDIO_OK = 'ok.mp3';
+const AUDIO_END = 'end.mp3';
+const AUDIO_COMPLETE = 'complete.mp3';
+const AUDIO_NOSOUND = '';
 
 // 변수
 let time;
@@ -59,10 +65,10 @@ let life = 5;
 //게임 세팅
 function init() {
   // init audio
-  bg.src = '';
-  ok.src = '';
-  end.scr = '';
-  time = 50;
+  bg.src = AUDIO_NOSOUND;
+  ok.src = AUDIO_NOSOUND;
+  end.scr = AUDIO_NOSOUND;
+  time = 30;
   if (!isNextLv) {
     score = 0;
     correctNum = 0;
@@ -84,14 +90,13 @@ function init() {
 
 // 게임 시작
 function run() {
-  bg.src = 'bg.mp3';
-  bg.volume = 0.1;
-  ok.volumn = 0.1;
-  end.volumn = 0.1;
-  complete.volumn = 0.2;
+  bg.src = AUDIO_BG;
+  bg.volume = VOL;
+  ok.volumn = VOL;
+  end.volumn = VOL;
+  complete.volumn = VOL;
 
   isPlaying = changeStatus(isPlaying);
-  console.log('run: ' + isPlaying);
   if (!isPlaying) {
     return;
   } else {
@@ -105,14 +110,13 @@ function run() {
         if (enterPressed === 0) {
           enterPressed++;
           let input = inputWord.value.trim();
-          if ('' === input) {
-            // console.log('no input');
+          if (TEXT_BLANK === input) {
           } else {
-            inputWord.value = '';
+            inputWord.value = TEXT_BLANK;
             let compareCorrect = correctNum;
             for (let i = 0; i < word_div.length; i++) {
               if (word_div[i].offsetTop > 0 && input === word_div[i].innerText) {
-                ok.src = 'ok.mp3';
+                ok.src = AUDIO_OK;
                 word_div[i].remove();
                 correctNum++;
                 correctBoard.innerText = correctNum;
@@ -183,6 +187,17 @@ function initDisplay() {
   gameover_content.classList.remove('quit-game-active');
 }
 
+// lifeBoard 표시
+function displayLife(lifeconut) {
+  // LIFE 아이콘 표시
+  lifeBoard.innerText = TEXT_BLANK;
+  if (lifeconut > 0) {
+    for (let i = 0; i < life; i++) {
+      lifeBoard.innerText += LIFE_ICON;
+    }
+  }
+}
+
 // 선택 버튼 - yes
 btn_yes.addEventListener('click', () => {
   if (gameover_desc.innerText === GAMEOVER_DESC_SUCCESS) {
@@ -192,17 +207,6 @@ btn_yes.addEventListener('click', () => {
   gameover_content.classList.remove('quit-game-active');
   init();
 });
-
-function displayLife(lifeconut) {
-  // LIFE 아이콘 표시
-  console.log(lifeconut);
-  lifeBoard.innerText = '';
-  if (lifeconut > 0) {
-    for (let i = 0; i < life; i++) {
-      lifeBoard.innerText += LIFE_ICON;
-    }
-  }
-}
 
 // 선택 버튼 - no
 btn_no.addEventListener('click', () => {
@@ -214,8 +218,8 @@ btn_no.addEventListener('click', () => {
   isPlaying = false;
 });
 
+// word_div 움직이기
 function moveDiv() {
-  // FIX ME::
   let word_div = document.querySelectorAll('.dynamic-word-div');
 
   // 각 디브 랜덤 속도 세팅
@@ -231,24 +235,25 @@ function moveDiv() {
     } else {
       for (let i = 0; i < word_div.length; i++) {
         let divTop = word_div[i].style.top;
-        let temp = divTop.replace('px', '');
+        let temp = divTop.replace('px', TEXT_BLANK);
         word_div[i].style.top = temp++ + speed[i] + 'px';
         if (typingArea.offsetTop + 10 <= word_div[i].offsetTop) {
           word_div[i].style.color = 'red';
           word_div[i].remove();
           life > 0 ? life-- : (isPlaying = false);
           displayLife(life);
-          // lifeT[life].textContent = '';
         }
       }
     }
   }
 }
 
+// 게임 실행 상태 변경
 function changeStatus() {
   return isPlaying === true ? false : true;
 }
 
+// 카운트다운
 function countDown() {
   timer.innerHTML = time;
   time > TIME_ZERO ? time-- : (isPlaying = false);
@@ -258,11 +263,12 @@ function countDown() {
   }
 }
 
+// 게임 실행 상태 체크
 function checkIsPlaying() {
   if (!isPlaying || life < 1) {
     // 버그 수정 코드
-    bg.src = '';
-    lifeBoard.innerText = '';
+    bg.src = AUDIO_NOSOUND;
+    lifeBoard.innerText = TEXT_BLANK;
     gameOver();
   }
 }
@@ -271,10 +277,10 @@ let pauseEnd = 0;
 function gameOver() {
   pauseEnd = 0;
   if (!pauseEnd) {
-    life > 0 ? (complete.src = 'complete.mp3') : (end.src = 'end.mp3');
+    life > 0 ? (complete.src = AUDIO_COMPLETE) : (end.src = AUDIO_END);
   }
   pauseEnd = 1;
-  bg.src = '';
+  bg.src = AUDIO_NOSOUND;
 
   clearInterval(timeInterval);
   clearInterval(checkPlayInterval);
@@ -291,8 +297,8 @@ function gameOver() {
 }
 
 function always() {
-  sub_info.style.color = 'red';
-  sub_info.innerHTML = '게임 시간이 다 되어, 게임 종료 후 다시 하기 기능을 수정하였습니다.';
+  sub_info.style.color = COLOR_BLUE;
+  sub_info.innerText = NOTICE;
 }
 
 function getWords() {

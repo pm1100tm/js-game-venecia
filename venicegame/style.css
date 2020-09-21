@@ -132,6 +132,12 @@ body {
   z-index: 2;
 }
 
+.sub-info {
+  display: block;
+  height: 100%;
+  line-height: 20px;
+}
+
 .game-over-screen {
   display: none;
   position: relative;
