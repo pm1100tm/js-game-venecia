@@ -10,13 +10,14 @@ const correctBoard = document.querySelector('.correct');
 const wrongBoard = document.querySelector('.wrong');
 const accuracyBoard = document.querySelector('.acc');
 const scoreBoard = document.querySelector('.scoreboard');
+const lifeBoard = document.querySelector('.livecount');
 const typingArea = document.querySelector('.typing-area');
 const timer = document.querySelector('.about-time');
 const gameover_screen = document.querySelector('.game-over-screen');
 const gameover_content = document.querySelector('.game-over-content');
 const gameover_desc = document.querySelector('.gameover-desc');
 
-const lifeT = document.querySelectorAll('.livecount');
+// const lifeT = document.querySelectorAll('.livecount');
 const sub_info = document.querySelector('.sub-info');
 const btn_yes = document.querySelector('.gameover-yes');
 const btn_no = document.querySelector('.gameover-no');
@@ -35,6 +36,7 @@ const CHECK_IS_PLAY_TIME = 10;
 
 const GAMEOVER_DESC_RETRY = '게임이 종료되었습니다. 다시 하시겠습니까?';
 const GAMEOVER_DESC_SUCCESS = '축하합니다..! 다음 레벨에 도전 하시겠습니까?';
+const LIFE_ICON = '●';
 
 // 변수
 let time;
@@ -60,7 +62,7 @@ function init() {
   bg.src = '';
   ok.src = '';
   end.scr = '';
-  time = 5;
+  time = 50;
   if (!isNextLv) {
     score = 0;
     correctNum = 0;
@@ -169,7 +171,7 @@ function initDisplay() {
   accuracyBoard.innerText = accuracy;
   scoreBoard.innerText = score;
   timer.innerText = time;
-
+  displayLife(life);
   let removeDiv = document.querySelectorAll('.dynamic-word-div');
   if (0 < removeDiv.length) {
     for (let i = 0; i < removeDiv.length; i++) {
@@ -191,6 +193,17 @@ btn_yes.addEventListener('click', () => {
   init();
 });
 
+function displayLife(lifeconut) {
+  // LIFE 아이콘 표시
+  console.log(lifeconut);
+  lifeBoard.innerText = '';
+  if (lifeconut > 0) {
+    for (let i = 0; i < life; i++) {
+      lifeBoard.innerText += LIFE_ICON;
+    }
+  }
+}
+
 // 선택 버튼 - no
 btn_no.addEventListener('click', () => {
   gameover_screen.classList.remove('game-over-active');
@@ -204,7 +217,6 @@ btn_no.addEventListener('click', () => {
 function moveDiv() {
   // FIX ME::
   let word_div = document.querySelectorAll('.dynamic-word-div');
-  let divLength = word_div.length;
 
   // 각 디브 랜덤 속도 세팅
   for (let i = 0; i < word_div.length; i++) {
@@ -213,7 +225,7 @@ function moveDiv() {
 
   let checkMoveDiv = setInterval(frame, 200);
   function frame() {
-    if (divLength === 0 || !isPlaying) {
+    if (!isPlaying) {
       clearInterval(checkMoveDiv);
       isPlaying = false;
     } else {
@@ -224,9 +236,9 @@ function moveDiv() {
         if (typingArea.offsetTop + 10 <= word_div[i].offsetTop) {
           word_div[i].style.color = 'red';
           word_div[i].remove();
-          life > 1 ? life-- : (isPlaying = false);
-          lifeT[life].textContent = '';
-          divLength--;
+          life > 0 ? life-- : (isPlaying = false);
+          displayLife(life);
+          // lifeT[life].textContent = '';
         }
       }
     }
@@ -250,7 +262,7 @@ function checkIsPlaying() {
   if (!isPlaying || life < 1) {
     // 버그 수정 코드
     bg.src = '';
-    lifeT[0].textContent = '';
+    lifeBoard.innerText = '';
     gameOver();
   }
 }
