@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <script src="game.js" defer></script>
+    <!-- <script src="test.js" defer></script> -->
     <title>Word Typing Game</title>
   </head>
   <body>
@@ -55,14 +56,11 @@
       </div>
       <!-- 게임 화면 -->
       <div class="game-screen">
+        <!-- 타이핑 공간 -->
         <div class="typing-area">
           <input type="text" class="word" value="" />
         </div>
       </div>
-      <!-- 타이핑 공간 -->
-      <!-- <div class="typing-area">
-        <input type="text" class="word" value="" />
-      </div> -->
       <!-- 게임 추가 정보 -->
       <div class="bottom">
         <div class="sub-info">만들고 있다 만들고 있다 만들고 있다 만들고 있다</div>
@@ -78,17 +76,9 @@
         <button class="btn-game-over gameover-no">아니요</button>
       </div>
     </section>
-    <audio autoplay="false" controls class="audio bg"
-        src="">
-    </audio>
-
-    <audio autoplay="false" controls class="audio ok"
-      src="">
-
-    <audio autoplay="false" controls class="audio end"
-      src="">
-</audio>
-
-</embed>
+    <audio autoplay="false" controls class="audio bg" src=""></audio>
+    <audio autoplay="false" controls class="audio ok" src=""></audio>
+    <audio autoplay="false" controls class="audio end" src=""></audio>
+    <audio autoplay="false" controls class="audio complete" src=""></audio>
   </body>
 </html>

@@ -32,10 +32,10 @@ const CHECK_IS_PLAY_TIME = 10;
 
 // 변수
 let time;
-let score = 0;
-let correctNum = 0;
-let wrongNum = 0;
-let accuracy = 0;
+let score;
+let correctNum;
+let wrongNum;
+let accuracy;
 
 let isPlaying = false;
 let timeInterval = 0;
@@ -54,6 +54,11 @@ function init() {
   ok.src = '';
   end.scr = '';
   time = 20;
+  score = 0;
+  correctNum = 0;
+  wrongNum = 0;
+  accuracy = 0;
+
   words = [];
   word_div = [];
   main.style.display = 'none';
@@ -72,8 +77,6 @@ function run() {
   ok.volumn = 0.1;
   end.volumn = 0.1;
   isPlaying = changeStatus(isPlaying);
-  // timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
-  // checkPlayInterval = setInterval(checkIsPlaying, 10);
   console.log('run: ' + isPlaying);
   if (!isPlaying) {
     return;
@@ -94,7 +97,7 @@ function run() {
             inputWord.value = '';
             let compareCorrect = correctNum;
             for (let i = 0; i < word_div.length; i++) {
-              if (input === word_div[i].innerText) {
+              if (word_div[i].offsetTop > 0 && input === word_div[i].innerText) {
                 ok.src = 'ok.mp3';
                 word_div[i].remove();
                 correctNum++;
@@ -103,9 +106,6 @@ function run() {
                 scoreBoard.innerText = score;
                 break;
               } else {
-                // wrongNum++;
-                // wrongBoard.innerHTML = wrongNum;
-                // break;
               }
             }
             if (compareCorrect === correctNum) {
@@ -126,19 +126,37 @@ function run() {
 }
 
 function arrangeWords(LV_ONE_WORDS) {
-  for (let i = 0; i < LV_ONE_WORDS; i++) {
+  let tempArray = [];
+  while (tempArray.length < LV_ONE_WORDS) {
     let randomIndex = Math.floor(Math.random() * words.length);
+    if (tempArray.includes(words[randomIndex])) {
+      continue;
+    } else {
+      tempArray.push(words[randomIndex]);
+    }
+  }
+  words = tempArray;
+  for (let i = 0; i < LV_ONE_WORDS; i++) {
     word_div[i] = document.createElement('div');
-    word_div[i].innerText = words[randomIndex];
+    word_div[i].innerText = words[i];
     screen.appendChild(word_div[i]);
     word_div[i].className = 'dynamic-word-div';
     word_div[i].style.fontSize = Math.floor(Math.random() * 20) + 14 + 'px';
     word_div[i].style.top = Math.floor(Math.random() * screen.clientHeight) - screen.clientHeight + 'px';
+    if (Math.floor(word_div[i].offsetTop) > 500) {
+      word_div[i].style.top = 300 + 'px';
+    }
     word_div[i].style.left = Math.floor(Math.random() * (screen.clientWidth - word_div[i].clientWidth)) + 'px';
   }
 }
 
 function initDisplay() {
+  correctBoard.innerText = correctNum;
+  wrongBoard.innerText = wrongNum;
+  accuracyBoard.innerText = accuracy;
+  scoreBoard.innerText = score;
+  timer.innerText = time;
+
   let removeDiv = document.querySelectorAll('.dynamic-word-div');
   if (0 < removeDiv.length) {
     for (let i = 0; i < removeDiv.length; i++) {
