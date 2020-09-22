@@ -97,25 +97,30 @@ body {
   overflow: hidden;
 }
 
-.typing-area {
-  position: absolute;
-  min-height: 40px;
-  max-height: 40px;
-  text-align: center;
-  background-color: deepskyblue;
-  display: block;
-  top: 680px;
-  left: 500px;
-}
-
 .word {
-  width: 200px;
-  height: 20px;
+  display: block;
+  position: relative;
+  width: 220px;
+  height: 24px;
   font-size: 1.2rem;
   font-weight: 700;
   text-align: center;
   border-style: double;
   line-height: 20px;
+  top: 694px;
+  left: 480px;
+  z-index: 2;
+}
+
+.typing-area {
+  position: absolute;
+  min-height: 52px;
+  max-height: 52px;
+  text-align: center;
+  background-color: dodgerblue;
+  display: block;
+  top: 686px;
+  width: 100%;
 }
 
 .dynamic-word-div {

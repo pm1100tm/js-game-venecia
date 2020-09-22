@@ -35,7 +35,7 @@ const COLOR_BLUE = 'blue';
 const LIFE_ICON = '●';
 const GAMEOVER_DESC_RETRY = '게임이 종료되었습니다. 다시 하시겠습니까?';
 const GAMEOVER_DESC_SUCCESS = '축하합니다..! 다음 레벨에 도전 하시겠습니까?';
-const NOTICE = '정상적인 기능을 하고 있습니다. 문제가 있다면 깃헙 이슈에 기재해주세요.';
+const NOTICE = '게임UI가 개선되었습니다. 게임 종료 후 입력을 계속할 수 있었던 버그가 수정되었습니다.';
 const TEXT_BLANK = '';
 const VOL = '0.1';
 const AUDIO_BG = 'bg.mp3';
@@ -55,6 +55,7 @@ let isPlaying = false;
 let isNextLv = false;
 let timeInterval = 0;
 let checkPlayInterval = 0;
+let checkMoveDiv = 0;
 let words = [];
 let word_div = [];
 let speed = [];
@@ -68,7 +69,7 @@ function init() {
   bg.src = AUDIO_NOSOUND;
   ok.src = AUDIO_NOSOUND;
   end.scr = AUDIO_NOSOUND;
-  time = 3;
+  time = 20;
   if (!isNextLv) {
     score = 0;
     correctNum = 0;
@@ -229,21 +230,24 @@ function moveDiv() {
     speed[i] = Math.floor(Math.random() * 8) + 2;
   }
 
-  let checkMoveDiv = setInterval(frame, 200);
+  checkMoveDiv = setInterval(frame, 200);
   function frame() {
     if (!isPlaying) {
-      clearInterval(checkMoveDiv);
       isPlaying = false;
     } else {
       for (let i = 0; i < word_div.length; i++) {
         let divTop = word_div[i].style.top;
         let temp = divTop.replace('px', TEXT_BLANK);
         word_div[i].style.top = temp++ + speed[i] + 'px';
-        if (typingArea.offsetTop + 10 <= word_div[i].offsetTop) {
+        if (typingArea.offsetTop - 170 <= word_div[i].offsetTop) {
           word_div[i].style.color = 'red';
+        }
+
+        if (typingArea.offsetTop - 14 <= word_div[i].offsetTop) {
           word_div[i].remove();
-          life > 0 ? life-- : (isPlaying = false);
           displayLife(life);
+          life > 0 ? life-- : (isPlaying = false);
+          console.log(isPlaying);
         }
       }
     }
@@ -287,6 +291,7 @@ function gameOver() {
 
   clearInterval(timeInterval);
   clearInterval(checkPlayInterval);
+  clearInterval(checkMoveDiv);
 
   if (life > 0) {
     gameover_desc.innerText = GAMEOVER_DESC_SUCCESS;
