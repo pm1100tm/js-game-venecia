@@ -68,7 +68,7 @@ function init() {
   bg.src = AUDIO_NOSOUND;
   ok.src = AUDIO_NOSOUND;
   end.scr = AUDIO_NOSOUND;
-  time = 30;
+  time = 3;
   if (!isNextLv) {
     score = 0;
     correctNum = 0;
@@ -90,6 +90,8 @@ function init() {
 
 // 게임 시작
 function run() {
+  inputWord.removeAttribute('disabled', true);
+  inputWord.value = TEXT_BLANK;
   bg.src = AUDIO_BG;
   bg.volume = VOL;
   ok.volumn = VOL;
@@ -281,6 +283,7 @@ function gameOver() {
   }
   pauseEnd = 1;
   bg.src = AUDIO_NOSOUND;
+  inputWord.setAttribute('disabled', true);
 
   clearInterval(timeInterval);
   clearInterval(checkPlayInterval);
