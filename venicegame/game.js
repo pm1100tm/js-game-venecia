@@ -35,7 +35,7 @@ const COLOR_BLUE = 'blue';
 const LIFE_ICON = '●';
 const GAMEOVER_DESC_RETRY = '게임이 종료되었습니다. 다시 하시겠습니까?';
 const GAMEOVER_DESC_SUCCESS = '축하합니다..! 다음 레벨에 도전 하시겠습니까?';
-const NOTICE = '게임UI가 개선되었습니다. 게임 종료 후 입력을 계속할 수 있었던 버그가 수정되었습니다.';
+const NOTICE = '게임UI가 개선되었습니다. 목숨이 다 되어 게임 종료 후 있었던 버그가 수정되었습니다.';
 const TEXT_BLANK = '';
 const VOL = '0.1';
 const AUDIO_BG = 'bg.mp3';
@@ -59,6 +59,7 @@ let checkMoveDiv = 0;
 let words = [];
 let word_div = [];
 let speed = [];
+let div_speed = 8;
 let enterPressed = 0;
 let countWord = 0;
 let life = 5;
@@ -76,6 +77,9 @@ function init() {
     wrongNum = 0;
     accuracy = 0;
     life = 5;
+    div_speed = 8;
+  } else {
+    div_speed++;
   }
 
   words = [];
@@ -98,15 +102,16 @@ function run() {
   ok.volumn = VOL;
   end.volumn = VOL;
   complete.volumn = VOL;
-
-  isPlaying = changeStatus(isPlaying);
+  isPlaying = true;
+  // isPlaying = changeStatus(isPlaying);
   if (!isPlaying) {
     return;
   } else {
     inputWord.focus();
     timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
     checkPlayInterval = setInterval(checkIsPlaying, CHECK_IS_PLAY_TIME);
-    moveDiv(isPlaying);
+    // moveDiv(isPlaying);
+    moveDiv();
     inputWord.addEventListener('keypress', (event) => {
       let keyCode = event.keyCode || event.which;
       if (keyCode === 13) {
@@ -205,6 +210,8 @@ function displayLife(lifeconut) {
 btn_yes.addEventListener('click', () => {
   if (gameover_desc.innerText === GAMEOVER_DESC_SUCCESS) {
     isNextLv = true;
+  } else {
+    isNextLv = false;
   }
   gameover_screen.classList.remove('game-over-active');
   gameover_content.classList.remove('quit-game-active');
@@ -227,27 +234,38 @@ function moveDiv() {
 
   // 각 디브 랜덤 속도 세팅
   for (let i = 0; i < word_div.length; i++) {
-    speed[i] = Math.floor(Math.random() * 8) + 2;
+    speed[i] = Math.floor(Math.random() * div_speed) + 2;
   }
 
   checkMoveDiv = setInterval(frame, 200);
   function frame() {
     if (!isPlaying) {
-      isPlaying = false;
+      // isPlaying = false;
+      gameover();
     } else {
       for (let i = 0; i < word_div.length; i++) {
         let divTop = word_div[i].style.top;
         let temp = divTop.replace('px', TEXT_BLANK);
         word_div[i].style.top = temp++ + speed[i] + 'px';
-        if (typingArea.offsetTop - 170 <= word_div[i].offsetTop) {
-          word_div[i].style.color = 'red';
+
+        if (typingArea.offsetTop - 550 <= word_div[i].offsetTop) {
+          word_div[i].style.color = 'green';
         }
 
-        if (typingArea.offsetTop - 14 <= word_div[i].offsetTop) {
-          word_div[i].remove();
+        if (typingArea.offsetTop - 400 <= word_div[i].offsetTop) {
+          word_div[i].style.color = 'yellow';
+        }
+
+        if (typingArea.offsetTop - 220 <= word_div[i].offsetTop) {
+          word_div[i].style.color = 'red';
+        }
+        if (typingArea.offsetTop - 20 <= word_div[i].offsetTop) {
+          life--;
           displayLife(life);
-          life > 0 ? life-- : (isPlaying = false);
-          console.log(isPlaying);
+          if (life === 0) {
+            isPlaying = false;
+          }
+          word_div[i].remove();
         }
       }
     }
@@ -261,6 +279,7 @@ function changeStatus() {
 
 // 카운트다운
 function countDown() {
+  console.log('countDown');
   timer.innerHTML = time;
   time > TIME_ZERO ? time-- : (isPlaying = false);
   if (!isPlaying) {
@@ -271,6 +290,7 @@ function countDown() {
 
 // 게임 실행 상태 체크
 function checkIsPlaying() {
+  console.log('checkIsPlaying');
   if (!isPlaying || life < 1) {
     // 버그 수정 코드
     bg.src = AUDIO_NOSOUND;
@@ -350,8 +370,8 @@ function getWords() {
     '노션',
     '슬랙',
     '파인더',
-    '크롬브라우저',
-    '파이어폭스브라우저',
+    '크롬',
+    '파이어폭스',
     '사파리',
     '애플스토어',
     '안드로이드',

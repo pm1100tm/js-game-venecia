@@ -121,6 +121,7 @@ body {
   display: block;
   top: 686px;
   width: 100%;
+  z-index: 1;
 }
 
 .dynamic-word-div {
