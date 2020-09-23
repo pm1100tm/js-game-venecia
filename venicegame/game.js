@@ -2,6 +2,9 @@
 
 'use strict';
 
+//============================================================================================
+//============================================================================================
+// HTML ELEMENT
 const main = document.querySelector('.main');
 const gameDisplay = document.querySelector('.game-display');
 const inputWord = document.querySelector('.word');
@@ -19,19 +22,39 @@ const gameover_desc = document.querySelector('.gameover-desc');
 const sub_info = document.querySelector('.sub-info');
 const btn_yes = document.querySelector('.gameover-yes');
 const btn_no = document.querySelector('.gameover-no');
-
 const bg = document.querySelector('.bg');
 const ok = document.querySelector('.ok');
 const end = document.querySelector('.end');
 const complete = document.querySelector('.complete');
 
+//============================================================================================
+//============================================================================================
 // 상수
 const TIME_COUNT_DOWN = 1000;
+const CHECK_ISPLAY_TIME = 10;
+const CHECK_DIV_MOVE_TIME = 200;
+const GAME_TIME = 30;
 const TIME_ZERO = 0;
 const LV_ONE_WORDS = 50;
 const WORD_SCORE = 10;
-const CHECK_IS_PLAY_TIME = 10;
+const INIT_NUM = 0;
+const LIFE_COUNT = 5;
+const LIFE_ZERO = 0;
+const DEFAULT_DIV_SPEED = 8;
+const INCREASE_DIV_SPEED = 2;
+const COLOR_GREEN = 'green';
+const COLOR_YELLOW = 'yellow';
+const COLOR_RED = 'red';
 const COLOR_BLUE = 'blue';
+
+const POS_GREEN_LINE = '550';
+const POS_YELLOW_LINE = '400';
+const POS_RED_LINE = '200';
+const POS_DEAD_LINE = '20';
+
+const CHAR_PIXEL = 'px';
+const CHAR_NONE = 'none';
+const CHAR_FLEX = 'flex';
 const LIFE_ICON = '●';
 const GAMEOVER_DESC_RETRY = '게임이 종료되었습니다. 다시 하시겠습니까?';
 const GAMEOVER_DESC_SUCCESS = '축하합니다..! 다음 레벨에 도전 하시겠습니까?';
@@ -44,48 +67,58 @@ const AUDIO_END = 'end.mp3';
 const AUDIO_COMPLETE = 'complete.mp3';
 const AUDIO_NOSOUND = '';
 
+//============================================================================================
+//============================================================================================
 // 변수
 let time;
 let score;
 let correctNum;
 let wrongNum;
 let accuracy;
-
 let isPlaying = false;
 let isNextLv = false;
-let timeInterval = 0;
-let checkPlayInterval = 0;
-let checkMoveDiv = 0;
+let timeInterval = INIT_NUM;
+let checkPlayInterval = INIT_NUM;
+let checkMoveDiv = INIT_NUM;
 let words = [];
 let word_div = [];
 let speed = [];
-let div_speed = 8;
-let enterPressed = 0;
-let countWord = 0;
-let life = 5;
+let div_speed = DEFAULT_DIV_SPEED;
+let enterPressed = INIT_NUM;
+let countWord = INIT_NUM;
+let life = LIFE_COUNT;
 
-//게임 세팅
+//============================================================================================
+//============================================================================================
+// 게임 로직
+
+// 초기화
 function init() {
   // init audio
   bg.src = AUDIO_NOSOUND;
   ok.src = AUDIO_NOSOUND;
   end.scr = AUDIO_NOSOUND;
-  time = 20;
+  time = GAME_TIME;
   if (!isNextLv) {
-    score = 0;
-    correctNum = 0;
-    wrongNum = 0;
-    accuracy = 0;
-    life = 5;
-    div_speed = 8;
+    score = INIT_NUM;
+    correctNum = INIT_NUM;
+    wrongNum = INIT_NUM;
+    accuracy = INIT_NUM;
+    life = LIFE_COUNT;
+    div_speed = DEFAULT_DIV_SPEED;
   } else {
-    div_speed++;
+    div_speed = div_speed + INCREASE_DIV_SPEED;
   }
-
+  inputWord.value = TEXT_BLANK;
+  bg.src = AUDIO_BG;
+  bg.volume = VOL;
+  ok.volumn = VOL;
+  end.volumn = VOL;
+  complete.volumn = VOL;
   words = [];
   word_div = [];
-  main.style.display = 'none';
-  gameDisplay.style.display = 'flex';
+  main.style.display = CHAR_NONE;
+  gameDisplay.style.display = CHAR_FLEX;
   getWords();
   initDisplay();
   arrangeWords(LV_ONE_WORDS);
@@ -96,21 +129,13 @@ function init() {
 // 게임 시작
 function run() {
   inputWord.removeAttribute('disabled', true);
-  inputWord.value = TEXT_BLANK;
-  bg.src = AUDIO_BG;
-  bg.volume = VOL;
-  ok.volumn = VOL;
-  end.volumn = VOL;
-  complete.volumn = VOL;
   isPlaying = true;
-  // isPlaying = changeStatus(isPlaying);
   if (!isPlaying) {
     return;
   } else {
     inputWord.focus();
     timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
-    checkPlayInterval = setInterval(checkIsPlaying, CHECK_IS_PLAY_TIME);
-    // moveDiv(isPlaying);
+    checkPlayInterval = setInterval(checkIsPlaying, CHECK_ISPLAY_TIME);
     moveDiv();
     inputWord.addEventListener('keypress', (event) => {
       let keyCode = event.keyCode || event.which;
@@ -168,12 +193,12 @@ function arrangeWords(LV_ONE_WORDS) {
     word_div[i].innerText = words[i];
     screen.appendChild(word_div[i]);
     word_div[i].className = 'dynamic-word-div';
-    word_div[i].style.fontSize = Math.floor(Math.random() * 20) + 14 + 'px';
-    word_div[i].style.top = Math.floor(Math.random() * screen.clientHeight) - screen.clientHeight + 'px';
+    word_div[i].style.fontSize = Math.floor(Math.random() * 20) + 14 + CHAR_PIXEL;
+    word_div[i].style.top = Math.floor(Math.random() * screen.clientHeight) - screen.clientHeight + CHAR_PIXEL;
     if (Math.floor(word_div[i].offsetTop) > 500) {
-      word_div[i].style.top = 300 + 'px';
+      word_div[i].style.top = 300 + CHAR_PIXEL;
     }
-    word_div[i].style.left = Math.floor(Math.random() * (screen.clientWidth - word_div[i].clientWidth)) + 'px';
+    word_div[i].style.left = Math.floor(Math.random() * (screen.clientWidth - word_div[i].clientWidth)) + CHAR_PIXEL;
   }
 }
 
@@ -222,8 +247,8 @@ btn_yes.addEventListener('click', () => {
 btn_no.addEventListener('click', () => {
   gameover_screen.classList.remove('game-over-active');
   gameover_content.classList.remove('quit-game-active');
-  gameDisplay.style.display = 'none';
-  main.style.display = 'flex';
+  gameDisplay.style.display = CHAR_NONE;
+  main.style.display = CHAR_FLEX;
   isNextLv = false;
   isPlaying = false;
 });
@@ -237,7 +262,7 @@ function moveDiv() {
     speed[i] = Math.floor(Math.random() * div_speed) + 2;
   }
 
-  checkMoveDiv = setInterval(frame, 200);
+  checkMoveDiv = setInterval(frame, CHECK_DIV_MOVE_TIME);
   function frame() {
     if (!isPlaying) {
       // isPlaying = false;
@@ -245,24 +270,25 @@ function moveDiv() {
     } else {
       for (let i = 0; i < word_div.length; i++) {
         let divTop = word_div[i].style.top;
-        let temp = divTop.replace('px', TEXT_BLANK);
-        word_div[i].style.top = temp++ + speed[i] + 'px';
+        let temp = divTop.replace(CHAR_PIXEL, TEXT_BLANK);
+        word_div[i].style.top = temp++ + speed[i] + CHAR_PIXEL;
 
-        if (typingArea.offsetTop - 550 <= word_div[i].offsetTop) {
-          word_div[i].style.color = 'green';
+        if (typingArea.offsetTop - POS_GREEN_LINE <= word_div[i].offsetTop) {
+          word_div[i].style.color = COLOR_GREEN;
         }
 
-        if (typingArea.offsetTop - 400 <= word_div[i].offsetTop) {
-          word_div[i].style.color = 'yellow';
+        if (typingArea.offsetTop - POS_YELLOW_LINE <= word_div[i].offsetTop) {
+          word_div[i].style.color = COLOR_YELLOW;
         }
 
-        if (typingArea.offsetTop - 220 <= word_div[i].offsetTop) {
-          word_div[i].style.color = 'red';
+        if (typingArea.offsetTop - POS_RED_LINE <= word_div[i].offsetTop) {
+          word_div[i].style.color = COLOR_RED;
         }
-        if (typingArea.offsetTop - 20 <= word_div[i].offsetTop) {
+
+        if (typingArea.offsetTop - POS_DEAD_LINE <= word_div[i].offsetTop) {
           life--;
           displayLife(life);
-          if (life === 0) {
+          if (LIFE_ZERO === life) {
             isPlaying = false;
           }
           word_div[i].remove();
@@ -279,7 +305,6 @@ function changeStatus() {
 
 // 카운트다운
 function countDown() {
-  console.log('countDown');
   timer.innerHTML = time;
   time > TIME_ZERO ? time-- : (isPlaying = false);
   if (!isPlaying) {
@@ -290,7 +315,6 @@ function countDown() {
 
 // 게임 실행 상태 체크
 function checkIsPlaying() {
-  console.log('checkIsPlaying');
   if (!isPlaying || life < 1) {
     // 버그 수정 코드
     bg.src = AUDIO_NOSOUND;
@@ -303,7 +327,7 @@ let pauseEnd = 0;
 function gameOver() {
   pauseEnd = 0;
   if (!pauseEnd) {
-    life > 0 ? (complete.src = AUDIO_COMPLETE) : (end.src = AUDIO_END);
+    life > LIFE_ZERO ? (complete.src = AUDIO_COMPLETE) : (end.src = AUDIO_END);
   }
   pauseEnd = 1;
   bg.src = AUDIO_NOSOUND;
@@ -313,7 +337,7 @@ function gameOver() {
   clearInterval(checkPlayInterval);
   clearInterval(checkMoveDiv);
 
-  if (life > 0) {
+  if (life > LIFE_ZERO) {
     gameover_desc.innerText = GAMEOVER_DESC_SUCCESS;
     gameover_screen.classList.add('game-over-active');
     gameover_content.classList.add('quit-game-active');
