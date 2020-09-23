@@ -137,9 +137,12 @@ function run() {
     timeInterval = setInterval(countDown, TIME_COUNT_DOWN);
     checkPlayInterval = setInterval(checkIsPlaying, CHECK_ISPLAY_TIME);
     moveDiv();
+
+    // 입력 값 비교
     inputWord.addEventListener('keypress', (event) => {
       let keyCode = event.keyCode || event.which;
       if (keyCode === 13) {
+        //엔터키 중복 체크
         if (enterPressed === 0) {
           enterPressed++;
           let input = inputWord.value.trim();
@@ -167,7 +170,7 @@ function run() {
             accuracyBoard.innerText = accuracy;
           }
 
-          //엔터키가 두번 눌려졌을 때
+          ////엔터키 중복 체크
         } else if (enterPressed === 1) {
           event.preventDefault();
         }
@@ -177,6 +180,7 @@ function run() {
   }
 }
 
+// 텍스트 배열 생성, DIV 배치 초기화
 function arrangeWords(LV_ONE_WORDS) {
   let tempArray = [];
   while (tempArray.length < LV_ONE_WORDS) {
@@ -202,6 +206,7 @@ function arrangeWords(LV_ONE_WORDS) {
   }
 }
 
+// 화면 초기화
 function initDisplay() {
   correctBoard.innerText = correctNum;
   wrongBoard.innerText = wrongNum;
@@ -233,11 +238,7 @@ function displayLife(lifeconut) {
 
 // 선택 버튼 - yes
 btn_yes.addEventListener('click', () => {
-  if (gameover_desc.innerText === GAMEOVER_DESC_SUCCESS) {
-    isNextLv = true;
-  } else {
-    isNextLv = false;
-  }
+  gameover_desc.innerText === GAMEOVER_DESC_SUCCESS ? (isNextLv = true) : (isNextLv = false);
   gameover_screen.classList.remove('game-over-active');
   gameover_content.classList.remove('quit-game-active');
   init();
@@ -253,19 +254,19 @@ btn_no.addEventListener('click', () => {
   isPlaying = false;
 });
 
-// word_div 움직이기
+// 텍스트 움직이기
 function moveDiv() {
   let word_div = document.querySelectorAll('.dynamic-word-div');
 
-  // 각 디브 랜덤 속도 세팅
+  // 텍스트 개별 속도 세팅
   for (let i = 0; i < word_div.length; i++) {
     speed[i] = Math.floor(Math.random() * div_speed) + 2;
   }
 
+  // 텍스트 0.2 초 마다 밑으로 이동
   checkMoveDiv = setInterval(frame, CHECK_DIV_MOVE_TIME);
   function frame() {
     if (!isPlaying) {
-      // isPlaying = false;
       gameover();
     } else {
       for (let i = 0; i < word_div.length; i++) {
@@ -273,18 +274,22 @@ function moveDiv() {
         let temp = divTop.replace(CHAR_PIXEL, TEXT_BLANK);
         word_div[i].style.top = temp++ + speed[i] + CHAR_PIXEL;
 
+        // 텍스트 초록라인 감지
         if (typingArea.offsetTop - POS_GREEN_LINE <= word_div[i].offsetTop) {
           word_div[i].style.color = COLOR_GREEN;
         }
 
+        // 텍스트 옐로우라인 감지
         if (typingArea.offsetTop - POS_YELLOW_LINE <= word_div[i].offsetTop) {
           word_div[i].style.color = COLOR_YELLOW;
         }
 
+        // 텍스트 레드라인 감지
         if (typingArea.offsetTop - POS_RED_LINE <= word_div[i].offsetTop) {
           word_div[i].style.color = COLOR_RED;
         }
 
+        // 텍스트 데드라인 감지
         if (typingArea.offsetTop - POS_DEAD_LINE <= word_div[i].offsetTop) {
           life--;
           displayLife(life);
@@ -316,13 +321,14 @@ function countDown() {
 // 게임 실행 상태 체크
 function checkIsPlaying() {
   if (!isPlaying || life < 1) {
-    // 버그 수정 코드
+    // ##버그 수정 코드
     bg.src = AUDIO_NOSOUND;
     lifeBoard.innerText = TEXT_BLANK;
     gameOver();
   }
 }
 
+// 게임 오버 로직
 let pauseEnd = 0;
 function gameOver() {
   pauseEnd = 0;
@@ -333,6 +339,7 @@ function gameOver() {
   bg.src = AUDIO_NOSOUND;
   inputWord.setAttribute('disabled', true);
 
+  // 모든 setInverval 함수 해제
   clearInterval(timeInterval);
   clearInterval(checkPlayInterval);
   clearInterval(checkMoveDiv);
@@ -348,11 +355,13 @@ function gameOver() {
   }
 }
 
+// NOTICE
 function always() {
   sub_info.style.color = COLOR_BLUE;
   sub_info.innerText = NOTICE;
 }
 
+// 텍스트 배열 준비 값 (TEMP)
 function getWords() {
   words = [
     '추억의',
