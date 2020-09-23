@@ -42,16 +42,16 @@ const LIFE_COUNT = 5;
 const LIFE_ZERO = 0;
 const DEFAULT_DIV_SPEED = 8;
 const INCREASE_DIV_SPEED = 2;
+const INIT_DIV_LINE = 500;
+const PERCENTAGE = 100;
 const COLOR_GREEN = 'green';
 const COLOR_YELLOW = 'yellow';
 const COLOR_RED = 'red';
 const COLOR_BLUE = 'blue';
-
 const POS_GREEN_LINE = '550';
 const POS_YELLOW_LINE = '400';
 const POS_RED_LINE = '200';
 const POS_DEAD_LINE = '20';
-
 const CHAR_PIXEL = 'px';
 const CHAR_NONE = 'none';
 const CHAR_FLEX = 'flex';
@@ -163,7 +163,7 @@ function run() {
               wrongNum++;
               wrongBoard.innerText = wrongNum;
             }
-            accuracy = ((correctNum / (correctNum + wrongNum)) * 100).toFixed(2);
+            accuracy = ((correctNum / (correctNum + wrongNum)) * PERCENTAGE).toFixed(2);
             accuracyBoard.innerText = accuracy;
           }
 
@@ -195,7 +195,7 @@ function arrangeWords(LV_ONE_WORDS) {
     word_div[i].className = 'dynamic-word-div';
     word_div[i].style.fontSize = Math.floor(Math.random() * 20) + 14 + CHAR_PIXEL;
     word_div[i].style.top = Math.floor(Math.random() * screen.clientHeight) - screen.clientHeight + CHAR_PIXEL;
-    if (Math.floor(word_div[i].offsetTop) > 500) {
+    if (Math.floor(word_div[i].offsetTop) > INIT_DIV_LINE) {
       word_div[i].style.top = 300 + CHAR_PIXEL;
     }
     word_div[i].style.left = Math.floor(Math.random() * (screen.clientWidth - word_div[i].clientWidth)) + CHAR_PIXEL;
@@ -224,7 +224,7 @@ function initDisplay() {
 function displayLife(lifeconut) {
   // LIFE 아이콘 표시
   lifeBoard.innerText = TEXT_BLANK;
-  if (lifeconut > 0) {
+  if (LIFE_ZERO < lifeconut) {
     for (let i = 0; i < life; i++) {
       lifeBoard.innerText += LIFE_ICON;
     }
