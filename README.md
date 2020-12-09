@@ -9,7 +9,7 @@ https://pm1100tm.github.io/JS-PRAC/venicegame/game.html
 
 <br>
 
-![alt text](https://github.com/pm1100tm/JS-PRAC/blob/master/venicegame/image/game_image_2%20.png)
+![alt text](https://github.com/pm1100tm/JS-PRAC/blob/master/venicegame/image/game_image_2.png)
 
 <br>
 
