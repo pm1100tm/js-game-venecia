@@ -1,4 +1,4 @@
-Vanila Script Practice
+vanila script practice
 ==================
 ### You can see and play this game at the link bellow.
 https://pm1100tm.github.io/JS-PRAC/venicegame/game.html
