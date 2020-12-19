@@ -1,7 +1,7 @@
 vanila script practice
 ==================
 ### You can see and play this game at the link bellow.
-https://pm1100tm.github.io/JS-PRAC/venicegame/game.html
+https://pm1100tm.github.io/js-game-venecia/venicegame/game.html
 
 <br>
 
